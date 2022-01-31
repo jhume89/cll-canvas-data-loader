@@ -87,7 +87,7 @@ pub fn get_cast_as(orig_type: String, db_type: DatabaseType) -> String {
     }
     DatabaseType::Mysql => {
       match orig_type.to_lowercase().as_str() {
-        "bigint" => "SIGNED".to_owned(),
+        "bigint" => "UNSIGNED".to_owned(),
         "int" => "SIGNED".to_owned(),
         "float(17)" => "DECIMAL(34, 17)".to_owned(),
         "datetime" => "DATETIME".to_owned(),
