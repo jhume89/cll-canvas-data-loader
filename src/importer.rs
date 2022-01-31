@@ -254,9 +254,24 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
           trace!("Post Split!");
 
           // Get the table definition for the downloaded table we're looking at.
-          let table_def = self.api_client.get_table_definition(
-            file_name_split.table_name.clone(),
-          );
+          let mut try_count = 0;
+          let mut table_def = self.api_client.get_table_definition(
+              file_name_split.table_name.clone(),
+            );
+          loop {
+            try_count += 1;
+            if table_def.is_err() && try_count < 3 {
+              info!("process -> table_def -> failed on attempt {:?}...", try_count);
+            }
+            else {
+              break;
+            }
+
+            table_def = self.api_client.get_table_definition(
+              file_name_split.table_name.clone(),
+            );
+          }
+
           if table_def.is_err() {
             error!("process -> table_def -> is_err attempts exhausted. Now aborting!");
             has_failed.store(true, Ordering::Relaxed);
