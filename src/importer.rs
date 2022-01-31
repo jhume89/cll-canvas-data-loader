@@ -216,10 +216,15 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
         let file_name_split = FileNameSplit::new(file_name).unwrap();
 
         if VOLATILE_TABLES.contains(&file_name_split.table_name) || is_all_volatile {
-          let drop_res = self.db_adapter.drop_table(file_name_split.table_name);
-          if drop_res.is_err() {
-                error!("process -> is_volatile -> drop_res -> is_err");
-                error!("{:?}", drop_res.err().unwrap());
+          // importer.rs used to drop_table here, but this will clobber our changes if we've
+          // adjusted the schema from the automagic default one created by this import script.
+          // So instead of dropping, we'll truncate instead, so that our schema changes stay.
+
+          info!("Truncating table {}!", file_name_split.table_name);
+          let truncate_res = self.db_adapter.truncate_table(file_name_split.table_name);
+          if truncate_res.is_err() {
+                error!("process -> is_volatile -> truncate_res -> is_err");
+                error!("{:?}", truncate_res.err().unwrap());
                 has_failed.store(true, Ordering::Relaxed);
                 return;
           }

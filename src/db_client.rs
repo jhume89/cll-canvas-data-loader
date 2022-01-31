@@ -41,6 +41,11 @@ pub trait ImportDatabaseAdapter {
   /// * `table_name` - The Table name to Drop.
   fn drop_table(&self, table_name: String) -> Result<()>;
 
+  /// Truncates a Table in the Database. Specified table must exist.
+  ///
+  /// * `table_name` - The Table name to Truncate.
+  fn truncate_table(&self, table_name: String) -> Result<()>;
+
   /// Creates a Table in the Database.
   ///
   /// * `table_name` - The Table name to Create.
@@ -140,6 +145,28 @@ impl ImportDatabaseAdapter for DatabaseClient<PostgresConnectionManager> {
       return Err(ErrorKind::PostgresErr.into());
     } else {
       trace!("drop_table was successful");
+      return Ok(());
+    }
+  }
+
+  fn truncate_table(&self, table_name: String) -> Result<()> {
+    trace!("truncate_table was called for: [ {} ]", table_name);
+
+    // Get connection from the underlying pool.
+    let connection = self.underlying_pool.get();
+    if connection.is_err() {
+      return Err(ErrorKind::PostgresErr.into());
+    }
+    let connection = connection.unwrap();
+
+    // Create truncate table statement.
+    let result = connection.query(&format!("TRUNCATE TABLE {}", table_name));
+    if result.is_err() {
+      error!("truncate_table err");
+      error!("{:?}", result.err().unwrap());
+      return Err(ErrorKind::PostgresErr.into());
+    } else {
+      trace!("truncate_table was successful");
       return Ok(());
     }
   }
@@ -329,6 +356,28 @@ impl ImportDatabaseAdapter for DatabaseClient<MysqlConnectionManager> {
       return Err(ErrorKind::MysqlErr.into());
     } else {
       trace!("drop_table was successful");
+      return Ok(());
+    }
+  }
+
+  fn truncate_table(&self, table_name: String) -> Result<()> {
+    trace!("truncate_table was called for: [ {} ]", table_name);
+
+    // Get connection from the underlying pool.
+    let connection = self.underlying_pool.get();
+    if connection.is_err() {
+      return Err(ErrorKind::MysqlErr.into());
+    }
+    let mut connection = connection.unwrap();
+
+    // Create truncate table statement.
+    let result = connection.query(&format!("TRUNCATE TABLE {}", table_name));
+    if result.is_err() {
+      error!("truncate_table err");
+      error!("{:?}", result.err().unwrap());
+      return Err(ErrorKind::MysqlErr.into());
+    } else {
+      trace!("truncate_table was successful");
       return Ok(());
     }
   }
