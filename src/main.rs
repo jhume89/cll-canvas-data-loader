@@ -174,6 +174,7 @@ fn main() {
       );
 
       // If we have postgres compatability, and are configured for postgres, import that.
+      #[cfg(feature = "postgres_compat")]
       if cfg!(feature = "postgres_compat") {
         if settings.get_database_type() == DatabaseType::Psql {
           info!("Connecting to the DB");
@@ -208,6 +209,7 @@ fn main() {
       }
 
       // If we have mysql compatability, and are configured for mysql, import that.
+      #[cfg(feature = "mysql_compat")]
       if cfg!(feature = "mysql_compat") {
         if settings.get_database_type() == DatabaseType::Mysql {
           info!("Connecting to the DB");

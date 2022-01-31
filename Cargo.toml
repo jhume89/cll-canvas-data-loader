@@ -8,7 +8,8 @@ authors = [
 ]
 
 [features]
-default = [ "postgres_compat", "mysql_compat" ]
+# default = [ "postgres_compat", "mysql_compat" ]
+default = [ "mysql_compat" ]
 postgres_compat = [ "postgres", "r2d2_postgres" ]
 mysql_compat = [ "mysql" ]
 
@@ -35,8 +36,8 @@ serde_json = "^1.0"
 tokio-core = "^0.1"
 
 # Postgres Deps
-postgres = { version = "^0.15", optional = true }
-r2d2_postgres = { version = "^0.14", optional = true }
+postgres = { version = "^0.17", optional = true }
+r2d2_postgres = { version = "^0.16", optional = true }
 
 # Mysql Deps
 mysql = { version = "^14", optional = true, features = ["ssl"] }
