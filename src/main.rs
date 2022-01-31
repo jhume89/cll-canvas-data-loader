@@ -172,6 +172,7 @@ fn main() {
         format!("dump_processed_{}", dump.dump_id.clone()).as_bytes(),
         b"in_progress",
       );
+      info!("Now importing dump: {}...", dump.dump_id.clone());
 
       // If we have postgres compatability, and are configured for postgres, import that.
       #[cfg(feature = "postgres_compat")]

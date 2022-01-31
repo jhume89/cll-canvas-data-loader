@@ -190,6 +190,7 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
     trace!("Process Called for dump: {}", self.dump_id);
 
     // Download the Files for this dump.
+    info!("Downloading files for dump: {}", self.dump_id);
     try!(self.api_client.download_files_for_dump(
       self.dump_id.clone(),
     ));
@@ -237,7 +238,7 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
       .map(|entry| {
         // If we've already failed, skip. Don't try to keep importing.
         if has_failed.load(Ordering::Relaxed) {
-          trace!("Skipping Entry: {:?} , due to failing", entry);
+          info!("Skipping Entry: {:?} , due to failing", entry);
           return;
         }
 
@@ -255,8 +256,7 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
             file_name_split.table_name.clone(),
           );
           if table_def.is_err() {
-            error!("process -> table_def -> is_err");
-            error!("{:?}", table_def.err().unwrap());
+            error!("process -> table_def -> is_err attempts exhausted. Now aborting!");
             has_failed.store(true, Ordering::Relaxed);
             return;
           }
@@ -277,6 +277,8 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
           }
           let mut file = file.unwrap();
           trace!("Post File Open");
+
+          info!("Reading file {:?}", path.clone().file_name().unwrap().to_str());
 
           // Read the entire file into a buffer.
           // TODO: Maybe oneday switch to a buffered reader?
@@ -316,6 +318,8 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
             return;
           }
           trace!("Post create table");
+
+          info!("Processing {} lines for table {}...", finalized_string.lines().count(), file_name_split.table_name);
 
           // For each line in this file.
           for line in finalized_string.lines() {
@@ -370,11 +374,12 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
               let del_res = self.db_adapter.drop_record(
                 file_name_split.table_name.clone(),
                 column_defs.clone(),
-                id_like_column,
-                id_like_value,
+                id_like_column.clone(),
+                id_like_value.clone(),
               );
               if del_res.is_err() {
-                error!("Failed to drop column!");
+                error!("Failed to delete record with {:?} = {:?}.", id_like_column.clone(), id_like_value.clone());
+                error!("{:?}", del_res.err().unwrap());
                 has_failed.store(true, Ordering::Relaxed);
                 return;
               }
@@ -387,7 +392,8 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
                 columns,
               );
               if ins_res.is_err() {
-                error!("process -> for line in finalized_string -> !is_volatile -> ins_res -> is_err");
+                error!("process -> for line in finalized_string -> !is_volatile -> ins_res -> is_err\n\
+                  \tInferred id column={:?}, using id value={:?}", id_like_column.clone(), id_like_value.clone());
                 error!("{:?}", ins_res.err().unwrap());
                 has_failed.store(true, Ordering::Relaxed);
                 return;
@@ -395,6 +401,7 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
             }
             trace!("Imported Line.");
           }
+          info!("Finished importing table {:?}", file_name_split.table_name);
         }
       })
       .collect();
@@ -403,9 +410,10 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
 
     if !has_failed.load(Ordering::Relaxed) {
       trace!("Hasn't Failed");
+
       Ok(())
     } else {
-      trace!("Has Failed!");
+      error!("Has Failed!");
       Err(ErrorKind::ImportErr.into())
     }
   }

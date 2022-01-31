@@ -543,7 +543,8 @@ impl ImportDatabaseAdapter for DatabaseClient<MysqlConnectionManager> {
     // Execute.
     let statement = connection.query(&insert_string);
     if statement.is_err() {
-      error!("insert error");
+      error!("insert error on table {}", table_name);
+      error!("Insert_record string looked like: \n {}", insert_string);
       error!("{:?}", statement.err().unwrap());
       return Err(ErrorKind::MysqlErr.into());
     } else {
