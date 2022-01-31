@@ -157,9 +157,19 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
     if columns.contains_key("id") {
       debug!("Has ID Column!");
       return Some("id".to_owned());
-    } else {
+    }
+
+    // course_score_fact does not quite follow the naming convention,
+    // so we can't infer its id column using the underscore parsing below.
+    // Hardcode its id column to return here.
+    else if table_name == "course_score_fact" {
+      debug!("Processing course_score_fact: returning `score_id` as ID column.");
+      return Some("score_id".to_owned());
+    }
+
+    // Other tables are labeled like assignment_fact, and have assignment_id. Handle those.
+    else {
       debug!("Looking up name!");
-      // Other tables are labeled like assignment_fact, and have assignment_id. Handle those.
       let find_table_name_potential = table_name.rfind("_");
       if find_table_name_potential.is_some() {
         let (the_final_table_name, _) = table_name
