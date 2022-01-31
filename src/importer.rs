@@ -42,9 +42,11 @@ lazy_static! {
     "quiz_submission_dim".to_owned(),
     "quiz_submission_historical_dim".to_owned(),
     "submission_comment_participant_dim".to_owned(),
-    "requests".to_owned(),
     "assignment_override_user_rollup_fact".to_owned(),
     "enrollment_rollup_dim".to_owned(),
+    // requests used to be volatile so it would only store recent activity.
+    // Now we let it grow indefinitely.
+    // "requests".to_owned(),
   ];
 }
 
