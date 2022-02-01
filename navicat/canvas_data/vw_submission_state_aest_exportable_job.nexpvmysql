@@ -1,0 +1,42 @@
+{
+  "Version": 1.0,
+  "General": {
+    "Project": "",
+    "ProjectOwnerNavicatID": "",
+    "Server": "root@localhost",
+    "Catalog": "",
+    "Schema": "canvas_data",
+    "ExportType": "CSV",
+    "ExportDirectoryBookmark": "",
+    "ExportDirectoryPath": "/Users/jordanhume/Desktop/11",
+    "TargetCodepage": 65001,
+    "AddTimeStamp": true,
+    "TimeStampFormat": "YYYY-MM-DD-HHNNSS",
+    "IncludeTitle": false,
+    "FieldDelimiter": "\t",
+    "DateFormat": "YMD",
+    "DateSeparator": "-",
+    "ZeroPaddingDate": true,
+    "TimeSeparator": ":",
+    "DecimalSeparator": ".",
+    "TextQualifier": "\"",
+    "RowDelimiter": "LF",
+    "XMLFormat": "Element",
+    "UseBase64": true,
+    "AppendRecord": false,
+    "BlankIfZero": false,
+    "ContinueOnError": true
+  },
+  "Objects": [
+    {
+      "Object": {
+        "Name": "vw_submission_state_aest_exportable",
+        "ObjectType": "View_MYSQL"
+      },
+      "TargetName": "",
+      "TargetFilePath": "/Users/jordanhume/Desktop/11/vw_submission_state_aest_exportable_2021-11-18-120836.csv",
+      "AllFields": true,
+      "Fields": []
+    }
+  ]
+}

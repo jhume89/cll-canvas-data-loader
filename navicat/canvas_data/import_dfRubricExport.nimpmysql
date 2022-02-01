@@ -1,0 +1,530 @@
+{
+  "Version": 1.0,
+  "General": {
+    "AccessDBPassword": "",
+    "AccessLogonName": "",
+    "AccessLogonPassword": "",
+    "AccessSystemDBFile": "",
+    "BinaryDataEncoding": "Base64",
+    "BreakLines": "",
+    "Catalog": "",
+    "ContinueOnError": true,
+    "CreateAutoInc": false,
+    "DateDelimiter": "-",
+    "DateOrder": "YMD",
+    "DateTimeOrder": "DateTime",
+    "DecimalSymbol": ".",
+    "Encoding": 65001,
+    "FieldDelimiter": "Comma",
+    "FieldNameRow": 1,
+    "FieldSeparationType": "Delimited",
+    "FirstDataRow": 2,
+    "FourDigitYears": true,
+    "IgnoreForeignKeyConstraint": false,
+    "ImportDeletedRecords": false,
+    "ImportMode": "Copy",
+    "ImportType": "CSV",
+    "IncludeTagAttributesAsTableField": false,
+    "IncludeUniqueIndexFKey": false,
+    "JsonTagIdentifierObj": {
+      "JsonTagName": "",
+      "JsonParentTagName": "",
+      "JsonTagLevel": 0,
+      "JsonTagType": "Object"
+    },
+    "LastDataRow": 0,
+    "Project": "",
+    "ProjectOwnerNavicatID": "",
+    "RecordDelimiter": "LF",
+    "RunMultipleQueriesInEachExecution": true,
+    "Schema": "canvas_data",
+    "Server": "root@localhost",
+    "TextQualifier": "\"",
+    "ThousandSeparator": ",",
+    "TimeDelimiter": ":",
+    "UseEmptyStringAsNull": false,
+    "XMLTagIdentifier": ""
+  },
+  "ImportSources": [
+    {
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubric_associations.csv",
+      "SourceQueries": []
+    },
+    {
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubric_ratings.csv",
+      "SourceQueries": []
+    },
+    {
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubric_criteria.csv",
+      "SourceQueries": []
+    },
+    {
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubrics.csv",
+      "SourceQueries": []
+    }
+  ],
+  "TableMappings": [
+    {
+      "ConditionalQuery": "",
+      "IsNewTable": false,
+      "IsUserDefinedQuery": false,
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubric_associations.csv",
+      "SourceSchema": "",
+      "SourceTableName": "cll_rubric_associations",
+      "TargetTableName": "cll_rubric_associations",
+      "FieldMappings": [
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": true,
+          "IsSelected": true,
+          "SourceFieldName": "id",
+          "TargetFieldName": "id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "rubric_id",
+          "TargetFieldName": "rubric_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "association_id",
+          "TargetFieldName": "association_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "association_type",
+          "TargetFieldName": "association_type"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "use_for_grading",
+          "TargetFieldName": "use_for_grading"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "summary_data",
+          "TargetFieldName": "summary_data"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "purpose",
+          "TargetFieldName": "purpose"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "hide_score_total",
+          "TargetFieldName": "hide_score_total"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "hide_points",
+          "TargetFieldName": "hide_points"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "hide_outcome_results",
+          "TargetFieldName": "hide_outcome_results"
+        }
+      ]
+    },
+    {
+      "ConditionalQuery": "",
+      "IsNewTable": false,
+      "IsUserDefinedQuery": false,
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubric_ratings.csv",
+      "SourceSchema": "",
+      "SourceTableName": "cll_rubric_ratings",
+      "TargetTableName": "cll_rubric_ratings",
+      "FieldMappings": [
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": true,
+          "IsSelected": true,
+          "SourceFieldName": "id",
+          "TargetFieldName": "id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "description",
+          "TargetFieldName": "description"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "long_description",
+          "TargetFieldName": "long_description"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "criterion_id",
+          "TargetFieldName": "criterion_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "points",
+          "TargetFieldName": "points"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "rubric_id",
+          "TargetFieldName": "rubric_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "ordinal",
+          "TargetFieldName": "ordinal"
+        }
+      ]
+    },
+    {
+      "ConditionalQuery": "",
+      "IsNewTable": false,
+      "IsUserDefinedQuery": false,
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubric_criteria.csv",
+      "SourceSchema": "",
+      "SourceTableName": "cll_rubric_criteria",
+      "TargetTableName": "cll_rubric_criteria",
+      "FieldMappings": [
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": true,
+          "IsSelected": true,
+          "SourceFieldName": "id",
+          "TargetFieldName": "id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "description",
+          "TargetFieldName": "description"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "long_description",
+          "TargetFieldName": "long_description"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "points",
+          "TargetFieldName": "points"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "mastery_points",
+          "TargetFieldName": "mastery_points"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "ignore_for_scoring",
+          "TargetFieldName": "ignore_for_scoring"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "title",
+          "TargetFieldName": "title"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "criterion_use_range",
+          "TargetFieldName": "criterion_use_range"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "rubric_id",
+          "TargetFieldName": "rubric_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "ordinal",
+          "TargetFieldName": "ordinal"
+        }
+      ]
+    },
+    {
+      "ConditionalQuery": "",
+      "IsNewTable": false,
+      "IsUserDefinedQuery": false,
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_rubrics.csv",
+      "SourceSchema": "",
+      "SourceTableName": "cll_rubrics",
+      "TargetTableName": "cll_rubrics",
+      "FieldMappings": [
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": true,
+          "IsSelected": true,
+          "SourceFieldName": "id",
+          "TargetFieldName": "id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "context_id",
+          "TargetFieldName": "context_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "context_type",
+          "TargetFieldName": "context_type"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "points_possible",
+          "TargetFieldName": "points_possible"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "title",
+          "TargetFieldName": "title"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "reusable",
+          "TargetFieldName": "reusable"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "public",
+          "TargetFieldName": "public"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "read_only",
+          "TargetFieldName": "read_only"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "free_form_criterion_comments",
+          "TargetFieldName": "free_form_criterion_comments"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "hide_score_total",
+          "TargetFieldName": "hide_score_total"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "retrieved_at",
+          "TargetFieldName": "retrieved_at"
+        }
+      ]
+    }
+  ]
+}

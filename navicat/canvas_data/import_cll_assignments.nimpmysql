@@ -1,0 +1,320 @@
+{
+  "Version": 1.0,
+  "General": {
+    "AccessDBPassword": "",
+    "AccessLogonName": "",
+    "AccessLogonPassword": "",
+    "AccessSystemDBFile": "",
+    "BinaryDataEncoding": "Base64",
+    "BreakLines": "",
+    "Catalog": "",
+    "ContinueOnError": true,
+    "CreateAutoInc": false,
+    "DateDelimiter": "-",
+    "DateOrder": "YMD",
+    "DateTimeOrder": "DateTime",
+    "DecimalSymbol": ".",
+    "Encoding": 65001,
+    "FieldDelimiter": "Comma",
+    "FieldNameRow": 1,
+    "FieldSeparationType": "Delimited",
+    "FirstDataRow": 2,
+    "FourDigitYears": true,
+    "IgnoreForeignKeyConstraint": false,
+    "ImportDeletedRecords": false,
+    "ImportMode": "AppendUpdate",
+    "ImportType": "CSV",
+    "IncludeTagAttributesAsTableField": false,
+    "IncludeUniqueIndexFKey": false,
+    "JsonTagIdentifierObj": {
+      "JsonTagName": "",
+      "JsonParentTagName": "",
+      "JsonTagLevel": 0,
+      "JsonTagType": "Object"
+    },
+    "LastDataRow": 0,
+    "Project": "",
+    "ProjectOwnerNavicatID": "",
+    "RecordDelimiter": "LF",
+    "RunMultipleQueriesInEachExecution": true,
+    "Schema": "canvas_data",
+    "Server": "root@localhost",
+    "TextQualifier": "\"",
+    "ThousandSeparator": ",",
+    "TimeDelimiter": ":",
+    "UseEmptyStringAsNull": false,
+    "XMLTagIdentifier": ""
+  },
+  "ImportSources": [
+    {
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_assignments.csv",
+      "SourceQueries": []
+    }
+  ],
+  "TableMappings": [
+    {
+      "ConditionalQuery": "",
+      "IsNewTable": false,
+      "IsUserDefinedQuery": false,
+      "SourceFile": "/Users/jordanhume/workspace/colladmin-pn/exports/cll_assignments.csv",
+      "SourceSchema": "",
+      "SourceTableName": "cll_assignments",
+      "TargetTableName": "cll_assignments",
+      "FieldMappings": [
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": true,
+          "IsSelected": true,
+          "SourceFieldName": "canvas_id",
+          "TargetFieldName": "canvas_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "course_canvas_id",
+          "TargetFieldName": "course_canvas_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "title",
+          "TargetFieldName": "title"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "description",
+          "TargetFieldName": "description"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "due_at",
+          "TargetFieldName": "due_at"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "unlock_at",
+          "TargetFieldName": "unlock_at"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "lock_at",
+          "TargetFieldName": "lock_at"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "points_possible",
+          "TargetFieldName": "points_possible"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "grading_type",
+          "TargetFieldName": "grading_type"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "submission_types",
+          "TargetFieldName": "submission_types"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "workflow_state",
+          "TargetFieldName": "workflow_state"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "created_at",
+          "TargetFieldName": "created_at"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "updated_at",
+          "TargetFieldName": "updated_at"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "peer_review_count",
+          "TargetFieldName": "peer_review_count"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "peer_reviews",
+          "TargetFieldName": "peer_reviews"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "automatic_peer_reviews",
+          "TargetFieldName": "automatic_peer_reviews"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "grade_group_students_individually",
+          "TargetFieldName": "grade_group_students_individually"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "anonymous_peer_reviews",
+          "TargetFieldName": "anonymous_peer_reviews"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "muted",
+          "TargetFieldName": "muted"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "assignment_group_canvas_id",
+          "TargetFieldName": "assignment_group_canvas_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "position",
+          "TargetFieldName": "position"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "external_tool_canvas_id",
+          "TargetFieldName": "external_tool_canvas_id"
+        },
+        {
+          "FieldAutoIncrement": false,
+          "FieldIsNullable": true,
+          "FieldLength": 255,
+          "FieldScale": 0,
+          "FieldType": "varchar",
+          "IsKey": false,
+          "IsSelected": true,
+          "SourceFieldName": "cll_retrieved_at",
+          "TargetFieldName": "cll_retrieved_at"
+        }
+      ]
+    }
+  ]
+}
