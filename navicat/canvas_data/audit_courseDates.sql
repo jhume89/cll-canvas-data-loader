@@ -10,7 +10,7 @@ SET @currentTermId := (SELECT id from enrollment_term_dim where `name` = 'T1 202
 SET @coursesCreatedFrom := '2021-10-11';
 
 SELECT DISTINCT
-  convert_tz(( SELECT max( a.updated_at ) FROM assignment_dim a ), 'UTC', 'Australia/Melbourne')  as export_cutoff_aest,
+  convert_tz(( SELECT max( staleA.updated_at ) FROM assignment_dim staleA ), 'UTC', 'Australia/Melbourne')  as export_cutoff_aest,
   `acc`.`name` as account_name,
 	`c`.`id` as course_id,
 	`c`.`canvas_id` as course_canvas_id,
@@ -19,18 +19,19 @@ SELECT DISTINCT
 	`t`.`name` AS `term`,
 	`c`.`code` as course_code,
 	`c`.`name` as course_name,
-	a.title as assignment_title,
-	CONCAT('https://collarts.instructure.com/courses/',c.canvas_id,'/assignments/',a.canvas_id,'/edit') as assignment_url,
+	liveA.title as assignment_title,
+	CONCAT('https://collarts.instructure.com/courses/',c.canvas_id,'/assignments/',liveA.canvas_id,'/edit') as assignment_url,
   CONCAT('"',CONCAT_WS('\n',
 	  -- Check assignment status
-		IF ((a.workflow_state = 'unpublished' AND aweight.calculated_assignment_weight > 0), 'This is a weighted/formal assignment but it is unpublished. Could it be published and use availability dates instead?', NULL),
+		IF ((liveA.workflow_state = 'unpublished' AND aweight.calculated_assignment_weight > 0), 'This is a weighted/formal assignment but it is unpublished. Could it be published and use availability dates instead?', NULL),
 		
 		-- Check course date overrides
-		IF (d.calculated_course_start <> is null AND c.created_at >= '2021-08-01', 'This Unit is not linked to the trimester\'s term dates. Should it be?', NULL), 
-		IF (d.term_start is null AND c.created_at >= '2021-08-01', 'This Unit is not linked to the trimester\'s term dates. Should it be?', NULL), 
+		IF (d.calculated_course_start <> d.term_start AND c.created_at >= '2021-08-01', 'This Unit\'s start date does not match the term dates. Should it be using the standard term date instead?', NULL),
+		IF (d.calculated_course_end <> d.term_end AND c.created_at >= '2021-08-01', 'This Unit\'s end date does not match the term dates. Should it be using the standard term date instead?', NULL),
+		IF (d.term_start is null AND c.created_at >= '2021-08-01', 'This Unit is not linked to the trimester\'s term dates. Should it be?', NULL),
 	
 	  -- Check assignment date settings: impossible due dates, assignment availability/lock dates, etc.
-	  IF(d.calculated_due_at < d.calculated_course_start, 'Due date is before the start of tri. Should the due date be changed?', NULL),
+	  IF (d.calculated_due_at < d.calculated_course_start, 'Due date is before the start of tri. Should the due date be changed?', NULL),
     IF (d.calculated_due_at < d.calculated_unlock_at, 'Due date falls before the assignment\'s Available From date, so students will be unable to submmit. Please adjust the due date and/or availability dates.', NULL),
     IF (d.calculated_due_at > d.calculated_lock_at, 'Due date falls after the assignment\'s Available Until date, so students will be unable to submit. Please adjust the due date and/or availability dates.', NULL),
     IF (d.calculated_due_at > d.calculated_course_end, 'Due date is after the end of tri. Should the due date be changed? ', NULL),
@@ -51,7 +52,7 @@ SELECT DISTINCT
 		IF ((`ovgroups`.`group_count` >= 4), 'Assignment has many override groups (4+). Are the groups/dates configured correctly?', NULL)
 	  
 	),'"') AS exceptions_description,
-	a.workflow_state as `published?`,
+	liveA.workflow_state as `published?`,
 	`cohort`.`member_count` as `#_students`,
 	aweight.calculated_assignment_weight as `calculated_assignment_weight`,
 	ovgroups.group_count as `#_override_groups`,
@@ -79,15 +80,16 @@ SELECT DISTINCT
 FROM
 	course_dim c
   join account_dim acc on (c.account_id = acc.id AND c.workflow_state <> 'deleted')
-	join vw_assignment_due_date d on (d.course_id = c.id)
+	join vw_assignment_due_dates d on (d.course_id = c.id)
 	join enrollment_term_dim t on (t.id = d.enrollment_term_id)
-	join assignment_dim a on (a.id = d.assignment_id AND a.workflow_state <> 'deleted')
-	join vw_assignment_weight aweight ON (a.id = aweight.assignment_id)
+	join cll_assignments liveA on (liveA.canvas_id = d.assignment_canvas_id AND liveA.workflow_state <> 'deleted')
+	left join assignment_dim staleA on (liveA.canvas_id = staleA.canvas_id)
+	left join vw_assignment_weights aweight ON (staleA.id = aweight.assignment_id)
 	left join enrollment_dim e on (e.id = d.enrollment_id AND e.workflow_state not in ('deleted', 'inactive', 'rejected'))
 	left join cll_assignment_tii_config tii on tii.assignment_canvas_id = d.assignment_canvas_id
 	left join (
 	  select ovg.assignment_id, count(distinct ovg.assignment_override_id) as `group_count`
-		from vw_assignment_due_date ovg
+		from vw_assignment_due_dates ovg
 		group by ovg.assignment_id
 	) ovgroups on ovgroups.assignment_id = d.assignment_id
 	left join (
@@ -107,16 +109,18 @@ FROM
 		group by c2.id
 	) cohort on cohort.course_id = c.id
 	left join (
-		select a2.id as assignment_id,
-			a2.title as assignment_title,
-			a2.description as assignment_description,
-			CAST(REGEXP_SUBSTR(BINARY a2.description, @findDatesRegex) AS VARCHAR(256)) as `match`
-		from assignment_dim a2
-		join course_dim c2 on a2.course_id = c2.id
+		select staleA2.id as assignment_id,
+			liveA2.title as assignment_title,
+			liveA2.description as assignment_description,
+			REPLACE(CAST(REGEXP_SUBSTR(BINARY liveA2.description, @findDatesRegex) AS VARCHAR(256)), '\n', '') as `match`
+		from assignment_dim staleA2
+		join cll_assignments liveA2 on liveA2.canvas_id = staleA2.canvas_id
+		join course_dim c2 on staleA2.course_id = c2.id
 		where c2.enrollment_term_id = @currentTermId
 		having `match` <> ""
-	) offending_text on offending_text.assignment_id = a.id
-WHERE c.enrollment_term_id = @currentTermId OR c.created_at > 
+	) offending_text on offending_text.assignment_id = staleA.id
+WHERE c.enrollment_term_id = @currentTermId OR c.created_at > @coursesCreatedFrom
+AND acc.id in (SELECT id from ls_monitored_accounts)
 -- HAVING exceptions_description <> '""'
 ORDER BY
 term_start desc, account_name,course_code,original_due_at,d.assignment_id,d.calculated_due_at,d.assignment_override_id;

@@ -8,11 +8,11 @@ SET @findDatesRegex :=
 			(Jan[\d\W]|Feb[\d\W]|Mar[\d\W]|Apr[\d\W]|Jun[\d\W]|Jul[\d\W]|Aug[\d\W]|Sept?[\d\W]|Oct[\d\W]|Nov[\d\W]|Dec[\d\W])
 		)(.{0,16})';
 		
-select a2.assignment_id,
-	a2.assignment_title,
-	a2.assignment_description,
-	@matchingText := CAST(REGEXP_SUBSTR(BINARY a2.description, @findDatesRegex) AS VARCHAR(256)) as `match`
-from assignment_dim a2
-join course_dim c2 on a2.course_id = c2.id
+select a2.canvas_id as assignment_canvas_id,
+	a2.title,
+	a2.description,
+	REPLACE(CAST(REGEXP_SUBSTR(BINARY a2.description, @findDatesRegex) AS VARCHAR(256)), '\n', '') as `match`
+from cll_assignments a2
+join course_dim c2 on a2.course_canvas_id = c2.canvas_id
 where c2.enrollment_term_id = @currentTermId
 having `match` <> "";

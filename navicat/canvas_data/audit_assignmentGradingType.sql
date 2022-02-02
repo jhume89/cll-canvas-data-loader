@@ -14,9 +14,9 @@ select
 	GROUP_CONCAT(a.points_possible SEPARATOR ' | ') as points_per_assignment
 from assignment_dim a
 join assignment_dim sister_a on a.course_id = sister_a.course_id
-join vw_assignment_type atype on a.id = atype.assignment_id
+join vw_assignment_types atype on a.id = atype.assignment_id
 left join assignment_group_dim agroup on a.assignment_group_id = agroup.id
-join vw_assignment_weight w on w.assignment_id = a.id
+join vw_assignment_weights w on w.assignment_id = a.id
 join course_dim c on c.id = a.course_id
 join account_dim acc on acc.id = c.account_id and acc.id in (select id from ls_monitored_accounts)
 join enrollment_term_dim t on t.id = c.enrollment_term_id

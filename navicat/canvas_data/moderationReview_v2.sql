@@ -63,7 +63,7 @@ SELECT
 	-- subs.speedgrader_url,
 	-- CONCAT("https://collarts.instructure.com/courses/",c.canvas_id,"/assignments/",a.canvas_id) as assignment_url,
 	-- subs.teacher_list AS teacher_list
-FROM `vw_submission_state` subs
+FROM `vw_submission_states` subs
 JOIN `course_dim` c ON subs.`course_id` = c.id
 JOIN `assignment_dim` a on subs.assignment_id = a.id
 JOIN `assignment_group_dim` agroup on agroup.id = a.assignment_group_id

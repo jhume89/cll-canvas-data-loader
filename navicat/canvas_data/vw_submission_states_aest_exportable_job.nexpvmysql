@@ -30,11 +30,11 @@
   "Objects": [
     {
       "Object": {
-        "Name": "vw_submission_state_aest_exportable",
+        "Name": "vw_submission_states_aest_exportable",
         "ObjectType": "View_MYSQL"
       },
       "TargetName": "",
-      "TargetFilePath": "/Users/jordanhume/Desktop/11/vw_submission_state_aest_exportable_2021-11-18-120836.csv",
+      "TargetFilePath": "/Users/jordanhume/Desktop/11/vw_submission_states_aest_exportable.csv",
       "AllFields": true,
       "Fields": []
     }

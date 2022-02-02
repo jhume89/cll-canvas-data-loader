@@ -33,8 +33,8 @@ FROM
 	course_dim c
   join account_dim acc on (c.account_id = acc.id AND c.workflow_state <> 'deleted')
 	join assignment_dim a on (a.course_id = c.id and a.workflow_state <> 'deleted')
-	join vw_assignment_weight aweight ON (a.id = aweight.assignment_id)
-	left join vw_term_name tv on (tv.id = c.enrollment_term_id)
+	join vw_assignment_weights aweight ON (a.id = aweight.assignment_id)
+	left join vw_term_names tv on (tv.id = c.enrollment_term_id)
 	left join vw_assignment_rubrics r on r.assignment_id = a.id
 	left join (
 		select c2.id as course_id, count(e2.id) as `member_count`
