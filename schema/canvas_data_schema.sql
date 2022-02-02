@@ -402,6 +402,59 @@ CREATE TABLE `assignment_rule_dim` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table structure for cll_assignment_tii_config
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_assignment_tii_config`;
+CREATE TABLE `cll_assignment_tii_config` (
+  `assignment_canvas_id` bigint(20) unsigned NOT NULL,
+  `course_canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `title` varchar(256) DEFAULT NULL,
+  `date_start` datetime DEFAULT NULL,
+  `date_due` datetime DEFAULT NULL,
+  `date_post` datetime DEFAULT NULL,
+  `max_points` double unsigned DEFAULT NULL,
+  `num_papers` int(11) unsigned DEFAULT NULL,
+  `tii_rubric_id` bigint(20) unsigned DEFAULT NULL,
+  `tii_rubric_name` varchar(256) DEFAULT NULL,
+  `tii_class_id` bigint(20) unsigned DEFAULT NULL,
+  `instructions` longtext DEFAULT NULL,
+  `late_accept_flag` tinyint(3) unsigned DEFAULT NULL,
+  `submit_papers_to` tinyint(3) unsigned DEFAULT NULL,
+  `allow_non_or_submissions` tinyint(3) unsigned DEFAULT NULL,
+  `anonymous_marking_enabled` tinyint(3) unsigned DEFAULT NULL,
+  `anonymous_marking_active` tinyint(3) unsigned DEFAULT NULL,
+  `s_view_reports` tinyint(3) unsigned DEFAULT NULL,
+  `has_peermarks` tinyint(3) unsigned DEFAULT NULL,
+  `report_gen_speed` bigint(20) unsigned DEFAULT NULL,
+  `membership_enabled` tinyint(3) unsigned DEFAULT NULL,
+  `exclude_value` tinyint(3) unsigned DEFAULT NULL,
+  `exclude_type` varchar(128) DEFAULT NULL,
+  `student_paper_check` tinyint(3) unsigned DEFAULT NULL,
+  `institution_check` tinyint(3) unsigned DEFAULT NULL,
+  `internet_check` tinyint(3) unsigned DEFAULT NULL,
+  `journal_check` tinyint(3) unsigned DEFAULT NULL,
+  `exclude_small_matches` tinyint(3) unsigned DEFAULT NULL,
+  `use_quoted_exclusion` tinyint(3) unsigned DEFAULT NULL,
+  `use_biblio_exclusion` tinyint(3) unsigned DEFAULT NULL,
+  `translated_matching` tinyint(3) unsigned DEFAULT NULL,
+  `erater` tinyint(3) unsigned DEFAULT NULL,
+  `ets_grammar` double DEFAULT NULL,
+  `ets_mechanics` double DEFAULT NULL,
+  `ets_usage` double DEFAULT NULL,
+  `ets_handbook` double DEFAULT NULL,
+  `ets_style` double DEFAULT NULL,
+  `ets_spelling` double DEFAULT NULL,
+  `ets_spelling_dictionary` varchar(128) DEFAULT NULL,
+  `retrieved_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`assignment_canvas_id`),
+  UNIQUE KEY `assignment_canvas_id` (`assignment_canvas_id`),
+  KEY `course_canvas_id` (`course_canvas_id`),
+  KEY `tii_rubric_id` (`tii_rubric_id`),
+  KEY `tii_class_id` (`tii_class_id`),
+  KEY `date_due` (`date_due`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for cll_assignments
 -- ----------------------------
 DROP TABLE IF EXISTS `cll_assignments`;

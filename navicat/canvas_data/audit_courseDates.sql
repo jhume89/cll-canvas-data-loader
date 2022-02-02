@@ -38,6 +38,10 @@ SELECT DISTINCT
 		IF (d.calculated_lock_at < d.calculated_unlock_at, 'The Available From/Until dates are incorrect - the assignment will never be unlocked for students. Please adjust the availability dates.', NULL),
 		IF (d.calculated_due_at IS NULL AND aweight.calculated_assignment_weight > 0, 'This is a weighted/formal assignment but it has no due date. Could we set one?', NULL),
 		
+		-- Check turnitin dates match Canvas
+		IF (tii.date_due <> d.calculated_due_at, CONCAT('Check TurnItIn due date. Canvas due =', d.calculated_due_at,', TurnItIn due = ', tii.date_due), NULL),
+		IF (tii.date_start <> d.calculated_unlock_at, CONCAT('Check TurnItIn start date. Canvas unlocks at ', d.calculated_unlock_at,', but TurnItIn unlocks at = ', tii.date_start), NULL),
+		IF (tii.late_accept_flag IS NOT NULL AND tii.late_accept_flag = false, 'TurnItIn will prevent late submissions. Fix on assignment page > TII settings cog > Optional Settings > Tick "Allow late submissions" > Click Submit.', NULL),
 		
 		-- Check assignment content: mention of dates, weightings, Week Number
 		if (offending_text.`match` IS NOT NULL, CONCAT('The assignment page content mentions one or more dates. If these are repeats of the due date, we recommend they be removed so you don\'t have to update them if/when the due date changes.\n    Example: "...', offending_text.`match`, '..."'), NULL),
@@ -57,14 +61,17 @@ SELECT DISTINCT
   convert_tz(d.calculated_due_at, 'UTC', 'Australia/Melbourne') AS due_at_aest,
   convert_tz(d.calculated_lock_at, 'UTC', 'Australia/Melbourne') AS available_until_aest,
   convert_tz(d.calculated_course_end, 'UTC', 'Australia/Melbourne') AS course_end_aest,
-  convert_tz(`d`.term_start, 'UTC', 'Australia/Melbourne') AS tri_start,
-  convert_tz(`d`.term_end, 'UTC', 'Australia/Melbourne') AS tri_end,
+  convert_tz(d.term_start, 'UTC', 'Australia/Melbourne') AS tri_start,
+  convert_tz(d.term_end, 'UTC', 'Australia/Melbourne') AS tri_end,
   convert_tz(d.original_unlock_at, 'UTC', 'Australia/Melbourne') AS original_unlock_at_aest,
   convert_tz(d.original_due_at, 'UTC', 'Australia/Melbourne') AS original_due_at_aest,
   convert_tz(d.original_lock_at, 'UTC', 'Australia/Melbourne') AS original_lock_at_aest,
   convert_tz(d.override_unlock_at, 'UTC', 'Australia/Melbourne') AS override_unlock_at_aest,
   convert_tz(d.override_due_at, 'UTC', 'Australia/Melbourne') AS override_due_at_aest,
   convert_tz(d.override_lock_at, 'UTC', 'Australia/Melbourne') AS override_lock_at_aest,
+	convert_tz(tii.date_start, 'UTC', 'Australia/Melbourne') AS tii_date_start_aest,
+  convert_tz(tii.date_due, 'UTC', 'Australia/Melbourne') AS tii_date_due_aest,
+  convert_tz(tii.date_post, 'UTC', 'Australia/Melbourne') AS tii_date_post_aest,
   d.overridden_unlock_flag,
 	d.overridden_due_flag,
 	d.overridden_lock_flag,
@@ -77,6 +84,7 @@ FROM
 	join assignment_dim a on (a.id = d.assignment_id AND a.workflow_state <> 'deleted')
 	join vw_assignment_weight aweight ON (a.id = aweight.assignment_id)
 	left join enrollment_dim e on (e.id = d.enrollment_id AND e.workflow_state not in ('deleted', 'inactive', 'rejected'))
+	left join cll_assignment_tii_config tii on tii.assignment_canvas_id = d.assignment_canvas_id
 	left join (
 	  select ovg.assignment_id, count(distinct ovg.assignment_override_id) as `group_count`
 		from vw_assignment_due_date ovg
