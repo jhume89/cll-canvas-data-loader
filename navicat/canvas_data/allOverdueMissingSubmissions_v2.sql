@@ -1,5 +1,6 @@
 SET @enrollmentsFromDate = '2021-08-01';
-SET @due_cutoff = (SELECT (Date(convert_tz(max(submission_dim.updated_at), 'UTC', 'Australia/Melbourne'))) from submission_dim);
+SET @due_from = (SELECT (Date(convert_tz(max(term.date_start), 'UTC', 'Australia/Melbourne'))) from enrollment_term_dim term where term.name = "T1 2022");
+SET @due_to = (SELECT (Date(convert_tz(max(submission_dim.updated_at), 'UTC', 'Australia/Melbourne'))) from submission_dim);
 
 SELECT 
   subs.export_cutoff_AEST AS export_cutoff_AEST,
@@ -53,5 +54,5 @@ FROM `vw_submission_states` subs
 JOIN `course_dim` c ON subs.`course_id` = c.id
 JOIN `assignment_dim` a on subs.assignment_id = a.id
 WHERE subs.`enrollment_created_at` >= @enrollmentsFromDate
-AND (convert_tz(subs.calculated_due_at, 'UTC', 'Australia/Melbourne' ) BETWEEN '2021-09-01' AND @due_cutoff) 
+AND (convert_tz(subs.calculated_due_at, 'UTC', 'Australia/Melbourne' ) BETWEEN @due_from AND @due_to)
 order by course_account,course_code,course_name,calculated_due_at,assignment_title,student_name;
