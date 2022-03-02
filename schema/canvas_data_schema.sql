@@ -2887,7 +2887,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_degree_prevalence` AS
 -- View structure for vw_enrollment_dates
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_enrollment_dates`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_enrollment_dates` AS select `e`.`id` AS `enrollment_id`,`e`.`user_id` AS `user_id`,`e`.`course_id` AS `course_id`,`e`.`created_at` AS `enrollment_created_at`,coalesce(`c`.`start_at`,`t`.`date_start`) AS `course_start_at`,coalesce(`c`.`conclude_at`,`t`.`date_end`) AS `course_end_at`,`e`.`workflow_state` AS `enrollment_workflow_state`,`c`.`workflow_state` AS `course_workflow_state` from ((`enrollment_dim` `e` join `course_dim` `c` on(`e`.`course_id` = `c`.`id`)) left join `enrollment_term_dim` `t` on(`t`.`id` = `c`.`enrollment_term_id`));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_enrollment_dates` AS select `e`.`id` AS `enrollment_id`,`e`.`user_id` AS `user_id`,`e`.`course_id` AS `course_id`,`e`.`created_at` AS `enrollment_created_at`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`start_at` is not null,`liveC`.`start_at`,`t`.`date_start`) AS `calculated_course_start`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`end_at` is not null,`liveC`.`end_at`,`t`.`date_end`) AS `calculated_course_end`,`e`.`workflow_state` AS `enrollment_workflow_state`,`c`.`workflow_state` AS `course_workflow_state` from (((`enrollment_dim` `e` join `course_dim` `c` on(`e`.`course_id` = `c`.`id`)) left join `cll_courses` `liveC` on(`liveC`.`canvas_id` = `c`.`canvas_id`)) left join `enrollment_term_dim` `t` on(`t`.`id` = `c`.`enrollment_term_id`));
 
 -- ----------------------------
 -- View structure for vw_major_degrees
