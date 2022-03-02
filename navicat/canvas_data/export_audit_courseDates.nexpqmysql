@@ -1,0 +1,45 @@
+{
+  "Version": 1.1,
+  "General": {
+    "Project": "",
+    "ProjectOwnerNavicatID": "",
+    "Server": "root@localhost",
+    "Catalog": "",
+    "Schema": "canvas_data",
+    "ExportType": "CSV",
+    "ExportDirectoryBookmark": "",
+    "ExportDirectoryPath": "/Users/jordanhume/Desktop/11",
+    "TargetCodepage": 65001,
+    "AddTimeStamp": true,
+    "TimeStampFormat": "YYYYMMDDHHNNSS",
+    "IncludeTitle": false,
+    "FieldDelimiter": "\t",
+    "DateFormat": "YMD",
+    "DateSeparator": "-",
+    "ZeroPaddingDate": true,
+    "TimeSeparator": ":",
+    "DecimalSeparator": ".",
+    "TextQualifier": "\"",
+    "RowDelimiter": "LF",
+    "XMLFormat": "Element",
+    "UseBase64": true,
+    "AppendRecord": false,
+    "BlankIfZero": false,
+    "ContinueOnError": true,
+    "CloudInstanceName": ""
+  },
+  "Objects": [
+    {
+      "Object": {
+        "Name": "audit_courseDates",
+        "ObjectType": "Query",
+        "Path": "/Users/jordanhume/workspace/cll-canvas-data-loader/navicat/canvas_data/audit_courseDates.sql",
+        "IsExternalQuery": false
+      },
+      "TargetName": "",
+      "TargetFilePath": "/Users/jordanhume/Desktop/11/audit_courseDates.csv",
+      "AllFields": true,
+      "Fields": []
+    }
+  ]
+}
