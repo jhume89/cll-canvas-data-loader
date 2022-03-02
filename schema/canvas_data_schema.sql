@@ -2936,6 +2936,51 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_states_aes
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_term_names`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_term_names` AS select `t`.`id` AS `id`,`t`.`canvas_id` AS `canvas_id`,`t`.`root_account_id` AS `root_account_id`,`t`.`name` AS `name`,if(`t`.`name` like 'T%',concat(substr(`t`.`name`,-4),' ',substr(`t`.`name`,1,2)),`t`.`name`) AS `sortable_name`,`t`.`date_start` AS `date_start`,`t`.`date_end` AS `date_end`,`t`.`sis_source_id` AS `sis_source_id` from `enrollment_term_dim` `t`;
+-- ----------------------------
+-- View structure for vw_urls
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_urls`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_urls` AS select `vw_url_pages`.`url_path` AS `url_path`,`vw_url_pages`.`context_type` AS `context_type`,`vw_url_pages`.`context_canvas_id` AS `context_canvas_id`,`vw_url_pages`.`course_canvas_id` AS `course_canvas_id`,`vw_url_pages`.`account_name` AS `account_name`,`vw_url_pages`.`course_code` AS `course_code`,`vw_url_pages`.`module_name` AS `module_name`,`vw_url_pages`.`module_#` AS `module_#`,`vw_url_pages`.`module_item_#` AS `module_item_#`,`vw_url_pages`.`display_name` AS `display_name`,`vw_url_pages`.`url` AS `url`,`vw_url_pages`.`context_workflow_state` AS `context_workflow_state` from `vw_url_pages` union select `vw_url_files`.`url_path` AS `url_path`,`vw_url_files`.`context_type` AS `context_type`,`vw_url_files`.`context_canvas_id` AS `context_canvas_id`,`vw_url_files`.`course_canvas_id` AS `course_canvas_id`,`vw_url_files`.`account_name` AS `account_name`,`vw_url_files`.`course_code` AS `course_code`,`vw_url_files`.`module_name` AS `module_name`,`vw_url_files`.`module_#` AS `module_#`,`vw_url_files`.`module_item_#` AS `module_item_#`,`vw_url_files`.`display_name` AS `display_name`,`vw_url_files`.`url` AS `url`,`vw_url_files`.`context_workflow_state` AS `context_workflow_state` from `vw_url_files` union select `vw_url_assignments`.`url_path` AS `url_path`,`vw_url_assignments`.`context_type` AS `context_type`,`vw_url_assignments`.`context_canvas_id` AS `context_canvas_id`,`vw_url_assignments`.`course_canvas_id` AS `course_canvas_id`,`vw_url_assignments`.`account_name` AS `account_name`,`vw_url_assignments`.`course_code` AS `course_code`,`vw_url_assignments`.`module_name` AS `module_name`,`vw_url_assignments`.`module_#` AS `module_#`,`vw_url_assignments`.`module_item_#` AS `module_item_#`,`vw_url_assignments`.`display_name` AS `display_name`,`vw_url_assignments`.`url` AS `url`,`vw_url_assignments`.`context_workflow_state` AS `context_workflow_state` from `vw_url_assignments` union select `vw_url_quizzes`.`url_path` AS `url_path`,`vw_url_quizzes`.`context_type` AS `context_type`,`vw_url_quizzes`.`context_canvas_id` AS `context_canvas_id`,`vw_url_quizzes`.`course_canvas_id` AS `course_canvas_id`,`vw_url_quizzes`.`account_name` AS `account_name`,`vw_url_quizzes`.`course_code` AS `course_code`,`vw_url_quizzes`.`module_name` AS `module_name`,`vw_url_quizzes`.`module_#` AS `module_#`,`vw_url_quizzes`.`module_item_#` AS `module_item_#`,`vw_url_quizzes`.`display_name` AS `display_name`,`vw_url_quizzes`.`url` AS `url`,`vw_url_quizzes`.`context_workflow_state` AS `context_workflow_state` from `vw_url_quizzes` order by `account_name`,`course_code`,`module_#`,`module_item_#`,`display_name`;
+
+-- ----------------------------
+-- View structure for vw_url_assignments
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_url_assignments`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_url_assignments` AS select `fn_assignment_path`(`c`.`canvas_id`,`a`.`canvas_id`) AS `url_path`,'assignment' AS `context_type`,`a`.`canvas_id` AS `context_canvas_id`,`c`.`canvas_id` AS `course_canvas_id`,`acc`.`name` AS `account_name`,`c`.`code` AS `course_code`,`m`.`name` AS `module_name`,`m`.`position` AS `module_#`,`mi`.`position` AS `module_item_#`,`a`.`title` AS `display_name`,`fn_canvas_url`(`fn_assignment_path`(`c`.`canvas_id`,`a`.`canvas_id`)) AS `url`,`a`.`workflow_state` AS `context_workflow_state` from ((((`assignment_dim` `a` join `course_dim` `c` on(`c`.`id` = `a`.`course_id` and `a`.`workflow_state` <> 'deleted')) left join `module_item_dim` `mi` on(`mi`.`course_id` = `c`.`id` and `mi`.`assignment_id` = `a`.`id` and `mi`.`workflow_state` <> 'deleted')) left join `module_dim` `m` on(`m`.`id` = `mi`.`module_id`)) join `account_dim` `acc` on(`c`.`account_id` = `acc`.`id`)) order by `acc`.`name`,`c`.`code`,`m`.`position`,`mi`.`position`,`a`.`title`;
+
+-- ----------------------------
+-- View structure for vw_url_files
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_url_files`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_url_files` AS select `fn_wiki_file_path`(`c`.`canvas_id`,`f`.`canvas_id`) AS `url_path`,'file' AS `context_type`,`f`.`canvas_id` AS `context_canvas_id`,`c`.`canvas_id` AS `course_canvas_id`,`acc`.`name` AS `account_name`,`c`.`code` AS `course_code`,`m`.`name` AS `module_name`,`m`.`position` AS `module_#`,`mi`.`position` AS `module_item_#`,`f`.`display_name` AS `display_name`,`fn_canvas_url`(`fn_wiki_file_path`(`c`.`canvas_id`,`f`.`canvas_id`)) AS `url`,`f`.`file_state` AS `context_workflow_state` from ((((`file_dim` `f` join `course_dim` `c` on(`c`.`id` = `f`.`course_id` and `f`.`file_state` <> 'deleted' and `f`.`submission_id` is null)) left join `module_item_dim` `mi` on(`mi`.`course_id` = `c`.`id` and `mi`.`file_id` = `f`.`id` and `mi`.`workflow_state` <> 'deleted')) left join `module_dim` `m` on(`m`.`id` = `mi`.`module_id`)) join `account_dim` `acc` on(`f`.`account_id` = `acc`.`id`)) order by `acc`.`name`,`c`.`code`,`m`.`position`,`mi`.`position`,`f`.`display_name`;
+
+-- ----------------------------
+-- View structure for vw_url_pages
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_url_pages`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_url_pages` AS select `fn_wiki_page_path`(`c`.`canvas_id`,`p`.`url`) AS `url_path`,'wiki_page' AS `context_type`,`p`.`canvas_id` AS `context_canvas_id`,`c`.`canvas_id` AS `course_canvas_id`,`acc`.`name` AS `account_name`,`c`.`code` AS `course_code`,`m`.`name` AS `module_name`,`m`.`position` AS `module_#`,`mi`.`position` AS `module_item_#`,`p`.`title` AS `display_name`,`fn_wiki_page_url`(`c`.`canvas_id`,`p`.`url`) AS `url`,`p`.`workflow_state` AS `context_workflow_state` from (((((`wiki_page_dim` `p` join `wiki_page_fact` `pf` on(`pf`.`wiki_page_id` = `p`.`id` and `p`.`workflow_state` <> 'deleted')) join `course_dim` `c` on(`c`.`id` = `pf`.`parent_course_id`)) left join `module_item_dim` `mi` on(`mi`.`course_id` = `c`.`id` and `mi`.`wiki_page_id` = `p`.`id` and `mi`.`workflow_state` <> 'deleted')) left join `module_dim` `m` on(`m`.`id` = `mi`.`module_id`)) join `account_dim` `acc` on(`pf`.`account_id` = `acc`.`id`)) order by `acc`.`name`,`c`.`code`,`m`.`position`,`mi`.`position`,`p`.`title`;
+
+-- ----------------------------
+-- View structure for vw_url_quizzes
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_url_quizzes`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_url_quizzes` AS select `fn_quiz_path`(`c`.`canvas_id`,`q`.`canvas_id`) AS `url_path`,'quiz' AS `context_type`,`q`.`canvas_id` AS `context_canvas_id`,`c`.`canvas_id` AS `course_canvas_id`,`acc`.`name` AS `account_name`,`c`.`code` AS `course_code`,`m`.`name` AS `module_name`,`m`.`position` AS `module_#`,`mi`.`position` AS `module_item_#`,`q`.`name` AS `display_name`,`fn_canvas_url`(`fn_quiz_path`(`c`.`canvas_id`,`q`.`canvas_id`)) AS `url`,`q`.`workflow_state` AS `context_workflow_state` from ((((`quiz_dim` `q` join `course_dim` `c` on(`c`.`id` = `q`.`course_id` and `q`.`workflow_state` <> 'deleted')) left join `module_item_dim` `mi` on(`mi`.`course_id` = `c`.`id` and `mi`.`quiz_id` = `q`.`id` and `mi`.`workflow_state` <> 'deleted')) left join `module_dim` `m` on(`m`.`id` = `mi`.`module_id`)) join `account_dim` `acc` on(`c`.`account_id` = `acc`.`id`)) order by `acc`.`name`,`c`.`code`,`m`.`position`,`mi`.`position`,`q`.`name`;
+
+-- ----------------------------
+-- Function structure for fn_assignment_path
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_assignment_path`;
+delimiter ;;
+CREATE FUNCTION `fn_assignment_path`(course_canvas_id BIGINT UNSIGNED, assignment_canvas_id BIGINT UNSIGNED)
+ RETURNS varchar(4096) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	RETURN CONCAT('/courses/',course_canvas_id,'/assignments/',assignment_canvas_id);
+END
+;;
+delimiter ;
 
 -- ----------------------------
 -- Function structure for fn_assignment_url
@@ -2954,6 +2999,22 @@ END
 delimiter ;
 
 -- ----------------------------
+-- Function structure for fn_canvas_url
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_canvas_url`;
+delimiter ;;
+CREATE FUNCTION `fn_canvas_url`(url_encoded_path varchar(4096))
+ RETURNS varchar(4096) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	RETURN CONCAT('https://collarts.instructure.com',url_encoded_path);
+END
+;;
+delimiter ;
+
+-- ----------------------------
 -- Function structure for fn_gradebook_url
 -- ----------------------------
 DROP FUNCTION IF EXISTS `fn_gradebook_url`;
@@ -2965,6 +3026,245 @@ CREATE FUNCTION `fn_gradebook_url`(course_canvas_id BIGINT UNSIGNED)
   SQL SECURITY INVOKER
 BEGIN
 	RETURN CONCAT('https://collarts.instructure.com/courses/',course_canvas_id,'/gradebook');
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Function structure for fn_quiz_path
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_quiz_path`;
+delimiter ;;
+CREATE FUNCTION `fn_quiz_path`(course_canvas_id BIGINT UNSIGNED, quiz_canvas_id BIGINT UNSIGNED)
+ RETURNS varchar(4096) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	RETURN CONCAT('/courses/',course_canvas_id,'/quizzes/',quiz_canvas_id);
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Function structure for fn_url_encode
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_url_encode`;
+delimiter ;;
+CREATE FUNCTION `fn_url_encode`(str VARCHAR(4096))
+ RETURNS varchar(4096) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	-- very important that % must be the first character to replace
+SET str = REPLACE(str, "%", "%25");
+
+-- the next block include the flag defEncode which indicates is necesary to encode the character
+SET str = REPLACE(str, " ", "%20");
+SET str = REPLACE(str, "!", "%21");
+SET str = REPLACE(str, "\"", "%22");
+SET str = REPLACE(str, "#", "%23");
+SET str = REPLACE(str, "$", "%24");
+# SET str = REPLACE(str, "%", "%25"); -- was done first, above (to avoid double-encoding the leading % on every char code)
+SET str = REPLACE(str, "&", "%26");
+SET str = REPLACE(str, "'", "%27");
+SET str = REPLACE(str, "(", "%28");
+SET str = REPLACE(str, ")", "%29");
+SET str = REPLACE(str, "*", "%2A");
+# SET str = REPLACE(str, "+", "%2B"); -- no need, plus is a valid URL-character
+SET str = REPLACE(str, ",", "%2C");
+# SET str = REPLACE(str, "-", "%2D"); -- no need, hyphen is a valid URL-character
+SET str = REPLACE(str, ".", "%2E");
+SET str = REPLACE(str, "/", "%2F");
+SET str = REPLACE(str, ":", "%3A");
+SET str = REPLACE(str, ";", "%3B");
+SET str = REPLACE(str, "<", "%3C");
+SET str = REPLACE(str, "=", "%3D");
+SET str = REPLACE(str, ">", "%3E");
+SET str = REPLACE(str, "?", "%3F");
+SET str = REPLACE(str, "@", "%40");
+SET str = REPLACE(str, "[", "%5B");
+SET str = REPLACE(str, "\\", "%5C");
+SET str = REPLACE(str, "]", "%5D");
+SET str = REPLACE(str, "^", "%5E");
+# SET str = REPLACE(str, "_", "%5F"); -- no need, underscore is a valid URL-character
+SET str = REPLACE(str, "`", "%60");
+SET str = REPLACE(str, "{", "%7B");
+SET str = REPLACE(str, "|", "%7C");
+SET str = REPLACE(str, "}", "%7D");
+SET str = REPLACE(str, "~", "%7E");
+SET str = REPLACE(str, "`", "%80");
+SET str = REPLACE(str, "‚", "%82");
+SET str = REPLACE(str, "ƒ", "%83");
+SET str = REPLACE(str, "„", "%84");
+SET str = REPLACE(str, "…", "%85");
+SET str = REPLACE(str, "†", "%86");
+SET str = REPLACE(str, "‡", "%87");
+SET str = REPLACE(str, "ˆ", "%88");
+SET str = REPLACE(str, "‰", "%89");
+SET str = REPLACE(str, "Š", "%8A");
+SET str = REPLACE(str, "‹", "%8B");
+SET str = REPLACE(str, "Œ", "%8C");
+SET str = REPLACE(str, "Ž", "%8E");
+SET str = REPLACE(str, "‘", "%91");
+SET str = REPLACE(str, "’", "%92");
+SET str = REPLACE(str, "“", "%93");
+SET str = REPLACE(str, "”", "%94");
+SET str = REPLACE(str, "•", "%95");
+SET str = REPLACE(str, "–", "%96");
+SET str = REPLACE(str, "—", "%97");
+SET str = REPLACE(str, "˜", "%98");
+SET str = REPLACE(str, "™", "%99");
+SET str = REPLACE(str, "š", "%9A");
+SET str = REPLACE(str, "›", "%9B");
+SET str = REPLACE(str, "œ", "%9C");
+SET str = REPLACE(str, "ž", "%9E");
+SET str = REPLACE(str, "Ÿ", "%9F");
+SET str = REPLACE(str, "¡", "%A1");
+SET str = REPLACE(str, "¢", "%A2");
+SET str = REPLACE(str, "£", "%A3");
+SET str = REPLACE(str, "¤", "%A4");
+SET str = REPLACE(str, "¥", "%A5");
+SET str = REPLACE(str, "¦", "%A6");
+SET str = REPLACE(str, "§", "%A7");
+SET str = REPLACE(str, "¨", "%A8");
+SET str = REPLACE(str, "©", "%A9");
+SET str = REPLACE(str, "ª", "%AA");
+SET str = REPLACE(str, "«", "%AB");
+SET str = REPLACE(str, "¬", "%AC");
+SET str = REPLACE(str, "®", "%AE");
+SET str = REPLACE(str, "¯", "%AF");
+SET str = REPLACE(str, "°", "%B0");
+SET str = REPLACE(str, "±", "%B1");
+SET str = REPLACE(str, "²", "%B2");
+SET str = REPLACE(str, "³", "%B3");
+SET str = REPLACE(str, "´", "%B4");
+SET str = REPLACE(str, "µ", "%B5");
+SET str = REPLACE(str, "¶", "%B6");
+SET str = REPLACE(str, "·", "%B7");
+SET str = REPLACE(str, "¸", "%B8");
+SET str = REPLACE(str, "¹", "%B9");
+SET str = REPLACE(str, "º", "%BA");
+SET str = REPLACE(str, "»", "%BB");
+SET str = REPLACE(str, "¼", "%BC");
+SET str = REPLACE(str, "½", "%BD");
+SET str = REPLACE(str, "¾", "%BE");
+SET str = REPLACE(str, "¿", "%BF");
+SET str = REPLACE(str, "À", "%C0");
+SET str = REPLACE(str, "Á", "%C1");
+SET str = REPLACE(str, "Â", "%C2");
+SET str = REPLACE(str, "Ã", "%C3");
+SET str = REPLACE(str, "Ä", "%C4");
+SET str = REPLACE(str, "Å", "%C5");
+SET str = REPLACE(str, "Æ", "%C6");
+SET str = REPLACE(str, "Ç", "%C7");
+SET str = REPLACE(str, "È", "%C8");
+SET str = REPLACE(str, "É", "%C9");
+SET str = REPLACE(str, "Ê", "%CA");
+SET str = REPLACE(str, "Ë", "%CB");
+SET str = REPLACE(str, "Ì", "%CC");
+SET str = REPLACE(str, "Í", "%CD");
+SET str = REPLACE(str, "Î", "%CE");
+SET str = REPLACE(str, "Ï", "%CF");
+SET str = REPLACE(str, "Ð", "%D0");
+SET str = REPLACE(str, "Ñ", "%D1");
+SET str = REPLACE(str, "Ò", "%D2");
+SET str = REPLACE(str, "Ó", "%D3");
+SET str = REPLACE(str, "Ô", "%D4");
+SET str = REPLACE(str, "Õ", "%D5");
+SET str = REPLACE(str, "Ö", "%D6");
+SET str = REPLACE(str, "×", "%D7");
+SET str = REPLACE(str, "Ø", "%D8");
+SET str = REPLACE(str, "Ù", "%D9");
+SET str = REPLACE(str, "Ú", "%DA");
+SET str = REPLACE(str, "Û", "%DB");
+SET str = REPLACE(str, "Ü", "%DC");
+SET str = REPLACE(str, "Ý", "%DD");
+SET str = REPLACE(str, "Þ", "%DE");
+SET str = REPLACE(str, "ß", "%DF");
+SET str = REPLACE(str, "à", "%E0");
+SET str = REPLACE(str, "á", "%E1");
+SET str = REPLACE(str, "â", "%E2");
+SET str = REPLACE(str, "ã", "%E3");
+SET str = REPLACE(str, "ä", "%E4");
+SET str = REPLACE(str, "å", "%E5");
+SET str = REPLACE(str, "æ", "%E6");
+SET str = REPLACE(str, "ç", "%E7");
+SET str = REPLACE(str, "è", "%E8");
+SET str = REPLACE(str, "é", "%E9");
+SET str = REPLACE(str, "ê", "%EA");
+SET str = REPLACE(str, "ë", "%EB");
+SET str = REPLACE(str, "ì", "%EC");
+SET str = REPLACE(str, "í", "%ED");
+SET str = REPLACE(str, "î", "%EE");
+SET str = REPLACE(str, "ï", "%EF");
+SET str = REPLACE(str, "ð", "%F0");
+SET str = REPLACE(str, "ñ", "%F1");
+SET str = REPLACE(str, "ò", "%F2");
+SET str = REPLACE(str, "ó", "%F3");
+SET str = REPLACE(str, "ô", "%F4");
+SET str = REPLACE(str, "õ", "%F5");
+SET str = REPLACE(str, "ö", "%F6");
+SET str = REPLACE(str, "÷", "%F7");
+SET str = REPLACE(str, "ø", "%F8");
+SET str = REPLACE(str, "ù", "%F9");
+SET str = REPLACE(str, "ú", "%FA");
+SET str = REPLACE(str, "û", "%FB");
+SET str = REPLACE(str, "ü", "%FC");
+SET str = REPLACE(str, "ý", "%FD");
+SET str = REPLACE(str, "þ", "%FE");
+SET str = REPLACE(str, "ÿ", "%FF");
+
+RETURN str;
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Function structure for fn_wiki_file_path
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_wiki_file_path`;
+delimiter ;;
+CREATE FUNCTION `fn_wiki_file_path`(course_canvas_id BIGINT UNSIGNED, file_canvas_id varchar(4096))
+ RETURNS varchar(4096) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	RETURN CONCAT('/courses/',course_canvas_id,'/files/',file_canvas_id);
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Function structure for fn_wiki_page_path
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_wiki_page_path`;
+delimiter ;;
+CREATE FUNCTION `fn_wiki_page_path`(course_canvas_id BIGINT UNSIGNED, wiki_page_url varchar(4096))
+ RETURNS varchar(4096) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	RETURN CONCAT('/courses/',course_canvas_id,'/pages/',fn_url_encode(wiki_page_url));
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Function structure for fn_wiki_page_url
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_wiki_page_url`;
+delimiter ;;
+CREATE FUNCTION `fn_wiki_page_url`(course_canvas_id BIGINT UNSIGNED, wiki_page_url varchar(4096))
+ RETURNS varchar(4096) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	RETURN CONCAT('https://collarts.instructure.com/courses/',course_canvas_id,'/pages/',fn_url_encode(wiki_page_url));
 END
 ;;
 delimiter ;
