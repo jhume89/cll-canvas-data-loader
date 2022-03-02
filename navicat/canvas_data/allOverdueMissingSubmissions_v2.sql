@@ -7,6 +7,7 @@ SELECT
 	subs.course_account as course_account,
 	subs.student_degree as student_degree,
   subs.student_name AS student_name,
+	subs.collarts_student_id as collarts_student_id,
   subs.user_id AS user_id,
   subs.enrollment_id AS enrollment_id,
   subs.course_id AS course_id,
