@@ -2935,7 +2935,8 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_states_aes
 -- View structure for vw_term_names
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_term_names`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_term_names` AS select `t`.`id` AS `id`,`t`.`canvas_id` AS `canvas_id`,`t`.`root_account_id` AS `root_account_id`,`t`.`name` AS `name`,if(`t`.`name` like 'T%',concat(substr(`t`.`name`,-4),' ',substr(`t`.`name`,1,2)),`t`.`name`) AS `sortable_name`,`t`.`date_start` AS `date_start`,`t`.`date_end` AS `date_end`,`t`.`sis_source_id` AS `sis_source_id` from `enrollment_term_dim` `t`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_term_names` AS select `t`.`id` AS `term_id`,`t`.`canvas_id` AS `canvas_id`,`t`.`root_account_id` AS `root_account_id`,`t`.`name` AS `name`,if(`t`.`name` like 'T%',concat(substr(`t`.`name`,-4),' ',substr(`t`.`name`,1,2)),`t`.`name`) AS `sortable_name`,`t`.`date_start` AS `date_start`,`t`.`date_end` AS `date_end`,`t`.`sis_source_id` AS `sis_source_id` from `enrollment_term_dim` `t`;
+
 -- ----------------------------
 -- View structure for vw_urls
 -- ----------------------------
