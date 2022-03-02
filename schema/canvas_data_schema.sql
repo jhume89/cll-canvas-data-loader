@@ -492,6 +492,61 @@ CREATE TABLE `cll_assignments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table structure for cll_courses
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_courses`;
+CREATE TABLE `cll_courses` (
+  `canvas_id` bigint(20) unsigned NOT NULL,
+  `root_account_canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `account_canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `enrollment_term_canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `grading_standard_canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `grade_passback_setting` varchar(127) DEFAULT NULL,
+  `sis_course_id` varchar(127) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `workflow_state` enum('completed','available','unpublished','deleted') DEFAULT NULL,
+  `sis_import_id` bigint(20) unsigned DEFAULT NULL,
+  `integration_id` bigint(20) unsigned DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `start_at` datetime DEFAULT NULL,
+  `end_at` datetime DEFAULT NULL,
+  `restrict_enrollments_to_course_dates` enum('false','true') DEFAULT NULL,
+  `default_view` varchar(127) DEFAULT NULL,
+  `storage_quota_mb` int(10) unsigned DEFAULT NULL,
+  `storage_quota_used_mb` int(10) unsigned DEFAULT NULL,
+  `open_enrollment` enum('false','true') DEFAULT NULL,
+  `self_enrollment` enum('false','true') DEFAULT NULL,
+  `apply_assignment_group_weights` enum('false','true') DEFAULT NULL,
+  `hide_final_grades` enum('false','true') DEFAULT NULL,
+  `allow_student_assignment_edits` enum('false','true') DEFAULT NULL,
+  `allow_wiki_comments` enum('false','true') DEFAULT NULL,
+  `allow_student_forum_attachments` enum('false','true') DEFAULT NULL,
+  `course_format` varchar(127) DEFAULT NULL,
+  `locale` varchar(127) DEFAULT NULL,
+  `time_zone` varchar(127) DEFAULT NULL,
+  `is_public` enum('false','true') DEFAULT NULL,
+  `is_public_to_auth_users` enum('false','true') DEFAULT NULL,
+  `public_syllabus` enum('false','true') DEFAULT NULL,
+  `public_syllabus_to_auth` enum('false','true') DEFAULT NULL,
+  `public_description` varchar(1023) DEFAULT NULL,
+  `blueprint` enum('false','true') DEFAULT NULL,
+  `template` enum('false','true') DEFAULT NULL,
+  `license` varchar(255) DEFAULT NULL,
+  `syllabus_body` longtext DEFAULT NULL,
+  `cll_retrieved_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`canvas_id`),
+  UNIQUE KEY `canvas_id` (`canvas_id`),
+  KEY `root_account_canvas_id` (`root_account_canvas_id`),
+  KEY `account_canvas_id` (`account_canvas_id`),
+  KEY `enrollment_term_canvas_id` (`enrollment_term_canvas_id`),
+  KEY `sis_source_id` (`sis_course_id`),
+  KEY `workflow_state` (`workflow_state`),
+  KEY `grading_standard_canvas_id` (`grading_standard_canvas_id`),
+  KEY `sis_import_id` (`sis_import_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for cll_rubric_associations
 -- ----------------------------
 DROP TABLE IF EXISTS `cll_rubric_associations`;
