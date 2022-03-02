@@ -7,7 +7,7 @@ SET @findDatesRegex :=
 		)(.{0,16})';
 		
 SET @currentTermId := (SELECT id from enrollment_term_dim where `name` = 'T1 2022');
-SET @coursesCreatedFrom := '2021-10-11';
+-- SET @coursesCreatedFrom := '2021-10-11';
 
 SELECT DISTINCT
   convert_tz(( SELECT max( staleA.updated_at ) FROM assignment_dim staleA ), 'UTC', 'Australia/Melbourne')  as export_cutoff_aest,
@@ -23,11 +23,11 @@ SELECT DISTINCT
 	CONCAT('https://collarts.instructure.com/courses/',c.canvas_id,'/assignments/',liveA.canvas_id,'/edit') as assignment_url,
   CONCAT('"',CONCAT_WS('\n',
 	  -- Check assignment status
-		IF ((liveA.workflow_state = 'unpublished' AND aweight.calculated_assignment_weight > 0), 'This is a weighted/formal assignment but it is unpublished. Could it be published and use availability dates instead?', NULL),
+		IF ((liveA.workflow_state = 'unpublished' AND aweight.calculated_assignment_weight > 0), 'This is a weighted/formal assignment but it is unpublished. Should it be published and use availability dates instead?', NULL),
 		
 		-- Check course date overrides
-		IF (d.calculated_course_start <> d.term_start AND c.created_at >= '2021-08-01', 'This Unit\'s start date does not match the term dates. Should it be using the standard term date instead?', NULL),
-		IF (d.calculated_course_end <> d.term_end AND c.created_at >= '2021-08-01', 'This Unit\'s end date does not match the term dates. Should it be using the standard term date instead?', NULL),
+		-- IF (d.calculated_course_start <> d.term_start AND c.created_at >= '2021-08-01', 'This Unit\'s start date does not match the term dates. Should it be using the standard term date instead?', NULL),
+		-- IF (d.calculated_course_end <> d.term_end AND c.created_at >= '2021-08-01', 'This Unit\'s end date does not match the term dates. Should it be using the standard term date instead?', NULL),
 		IF (d.term_start is null AND c.created_at >= '2021-08-01', 'This Unit is not linked to the trimester\'s term dates. Should it be?', NULL),
 	
 	  -- Check assignment date settings: impossible due dates, assignment availability/lock dates, etc.
@@ -37,7 +37,7 @@ SELECT DISTINCT
     IF (d.calculated_due_at > d.calculated_course_end, 'Due date is after the end of tri. Should the due date be changed? ', NULL),
     IF (d.calculated_lock_at < d.calculated_course_start, 'The Available Until date falls before the start of tri, so the assignment will be locked for the whole of term. Please adjust the availability dates.', NULL),
 		IF (d.calculated_lock_at < d.calculated_unlock_at, 'The Available From/Until dates are incorrect - the assignment will never be unlocked for students. Please adjust the availability dates.', NULL),
-		IF (d.calculated_due_at IS NULL AND aweight.calculated_assignment_weight > 0, 'This is a weighted/formal assignment but it has no due date. Could we set one?', NULL),
+		IF (d.calculated_due_at IS NULL AND aweight.calculated_assignment_weight > 0, 'This is a weighted/formal assignment but it has no due date. Should we set one?', NULL),
 		
 		-- Check turnitin dates match Canvas
 		IF (tii.date_due <> d.calculated_due_at, CONCAT('Check TurnItIn due date. Canvas due =', d.calculated_due_at,', TurnItIn due = ', tii.date_due), NULL),
@@ -119,7 +119,7 @@ FROM
 		where c2.enrollment_term_id = @currentTermId
 		having `match` <> ""
 	) offending_text on offending_text.assignment_id = staleA.id
-WHERE c.enrollment_term_id = @currentTermId OR c.created_at > @coursesCreatedFrom
+WHERE c.enrollment_term_id = @currentTermId -- OR c.created_at > @coursesCreatedFrom
 AND acc.id in (SELECT id from ls_monitored_accounts)
 -- HAVING exceptions_description <> '""'
 ORDER BY
