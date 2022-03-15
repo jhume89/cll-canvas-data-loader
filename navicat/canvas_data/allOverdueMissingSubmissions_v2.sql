@@ -27,9 +27,9 @@ SELECT
   subs.simple_submitted_state AS simple_submitted_state,
   subs.calculated_late_state AS calculated_late_state,
   subs.calculated_late_days AS calculated_late_days,
-  convert_tz(subs.submission_updated_at, 'UTC', 'Australia/Melbourne') AS submission_updated_at_AEST,
+  convert_tz(subs.calculated_submission_updated_at, 'UTC', 'Australia/Melbourne') AS calculated_submission_updated_at_AEST,
   convert_tz(subs.submitted_at, 'UTC', 'Australia/Melbourne') AS submitted_at_AEST,
-  subs.assignment_group_id AS assignment_group_id,
+  subs.assignment_group_canvas_id AS assignment_group_canvas_id,
   subs.assignment_points_possible AS assignment_points_possible,
   subs.assignment_group_sum_possible AS assignment_group_sum_possible,
   subs.calculated_assignment_weight AS calculated_assignment_weight,
@@ -55,4 +55,5 @@ JOIN `course_dim` c ON subs.`course_id` = c.id
 JOIN `assignment_dim` a on subs.assignment_id = a.id
 WHERE subs.`enrollment_created_at` >= @enrollmentsFromDate
 AND (convert_tz(subs.calculated_due_at, 'UTC', 'Australia/Melbourne' ) BETWEEN @due_from AND @due_to)
+AND c.account_id in (select id from ls_monitored_accounts_he)
 order by course_account,course_code,course_name,calculated_due_at,assignment_title,student_name;
