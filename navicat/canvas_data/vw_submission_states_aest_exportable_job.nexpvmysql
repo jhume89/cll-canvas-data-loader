@@ -1,5 +1,5 @@
 {
-  "Version": 1.0,
+  "Version": 1.1,
   "General": {
     "Project": "",
     "ProjectOwnerNavicatID": "",
@@ -25,7 +25,8 @@
     "UseBase64": true,
     "AppendRecord": false,
     "BlankIfZero": false,
-    "ContinueOnError": true
+    "ContinueOnError": true,
+    "CloudInstanceName": ""
   },
   "Objects": [
     {

@@ -31,11 +31,13 @@
   "Objects": [
     {
       "Object": {
-        "Name": "vw_submission_states_aest_he",
-        "ObjectType": "View_MYSQL"
+        "Name": "allOverdueMissingSubmissions_v2",
+        "ObjectType": "Query",
+        "Path": "/Users/jordanhume/workspace/cll-canvas-data-loader/navicat/canvas_data/allOverdueMissingSubmissions_v2.sql",
+        "IsExternalQuery": false
       },
       "TargetName": "",
-      "TargetFilePath": "/Users/jordanhume/Desktop/11/vw_submission_states_aest_he.csv",
+      "TargetFilePath": "/Users/jordanhume/Desktop/11/allOverdueMissingSubmissions_v2.csv",
       "AllFields": true,
       "Fields": []
     }
