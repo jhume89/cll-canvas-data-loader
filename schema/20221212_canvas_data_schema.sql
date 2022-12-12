@@ -3,15 +3,15 @@
 
  Source Server         : root@localhost
  Source Server Type    : MySQL
- Source Server Version : 100604
+ Source Server Version : 100604 (10.6.4-MariaDB)
  Source Host           : localhost:3306
  Source Schema         : canvas_data
 
  Target Server Type    : MySQL
- Target Server Version : 100604
+ Target Server Version : 100604 (10.6.4-MariaDB)
  File Encoding         : 65001
 
- Date: 15/03/2022 13:20:48
+ Date: 12/12/2022 18:53:42
 */
 
 SET NAMES utf8mb4;
@@ -402,6 +402,20 @@ CREATE TABLE `assignment_rule_dim` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table structure for cll_assignment_groups
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_assignment_groups`;
+CREATE TABLE `cll_assignment_groups` (
+  `canvas_id` bigint(20) unsigned NOT NULL,
+  `course_canvas_id` bigint(20) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `position` int(11) DEFAULT NULL,
+  `group_weight` double DEFAULT NULL,
+  PRIMARY KEY (`canvas_id`),
+  KEY `course_canvas_id` (`course_canvas_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for cll_assignment_tii_config
 -- ----------------------------
 DROP TABLE IF EXISTS `cll_assignment_tii_config`;
@@ -600,6 +614,189 @@ CREATE TABLE `cll_courses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- Table structure for cll_mv_assignment_due_dates
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_mv_assignment_due_dates`;
+CREATE TABLE `cll_mv_assignment_due_dates` (
+  `pkey` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `course_id` bigint(20) unsigned DEFAULT NULL,
+  `enrollment_id` bigint(20) unsigned NOT NULL,
+  `assignment_id` bigint(20) unsigned,
+  `assignment_canvas_id` bigint(20) unsigned NOT NULL,
+  `enrollment_term_id` bigint(20) unsigned DEFAULT NULL,
+  `enrollment_created_at` datetime DEFAULT NULL,
+  `course_start` datetime DEFAULT NULL,
+  `course_end` datetime DEFAULT NULL,
+  `term_start` datetime DEFAULT NULL,
+  `term_end` datetime DEFAULT NULL,
+  `assignment_override_id` bigint(20) unsigned DEFAULT NULL,
+  `original_unlock_at` datetime DEFAULT NULL,
+  `original_due_at` datetime DEFAULT NULL,
+  `original_lock_at` datetime DEFAULT NULL,
+  `override_unlock_at` datetime DEFAULT NULL,
+  `override_due_at` datetime DEFAULT NULL,
+  `override_lock_at` datetime DEFAULT NULL,
+  `overridden_unlock_flag` enum('new_unlock_at','same_unlock_at') DEFAULT NULL,
+  `overridden_due_flag` enum('new_due_at','same_due_at') DEFAULT NULL,
+  `overridden_lock_flag` enum('new_lock_at','same_lock_at') DEFAULT NULL,
+  `calculated_course_start` datetime DEFAULT NULL,
+  `calculated_unlock_at` datetime DEFAULT NULL,
+  `calculated_due_at` datetime DEFAULT NULL,
+  `calculated_lock_at` datetime DEFAULT NULL,
+  `calculated_course_end` datetime DEFAULT NULL,
+  `calculated_due_state` varchar(11) DEFAULT NULL,
+  PRIMARY KEY (`pkey`)
+) ENGINE=InnoDB AUTO_INCREMENT=65536 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cll_mv_assignment_weights_per_student
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_mv_assignment_weights_per_student`;
+CREATE TABLE `cll_mv_assignment_weights_per_student` (
+  `pkey` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `submission_canvas_id` bigint(20) unsigned NOT NULL,
+  `assignment_id` bigint(20) unsigned,
+  `assignment_canvas_id` bigint(20) unsigned NOT NULL,
+  `assignment_group_canvas_id` bigint(20) unsigned NOT NULL,
+  `assignment_group_name` varchar(255) DEFAULT NULL,
+  `title` varchar(256) DEFAULT NULL,
+  `workflow_state` enum('unpublished','published','deleted','fail_to_import') DEFAULT NULL,
+  `assignment_group_sum_possible` double DEFAULT NULL,
+  `assignment_points_possible` double DEFAULT NULL,
+  `calculated_assignment_weight` double DEFAULT NULL,
+  `assignment_group_total_weight` double DEFAULT NULL,
+  PRIMARY KEY (`pkey`),
+  KEY `user_id` (`user_id`),
+  KEY `submission_canvas_id` (`submission_canvas_id`),
+  KEY `assignment_canvas_id` (`assignment_canvas_id`),
+  KEY `assignment_group_canvas_id` (`assignment_group_canvas_id`),
+  KEY `assignment_id` (`assignment_id`),
+  KEY `term_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=131071 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cll_mv_course_teacher_list
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_mv_course_teacher_list`;
+CREATE TABLE `cll_mv_course_teacher_list` (
+  `pkey` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` bigint(20) unsigned NOT NULL,
+  `teacher_list` mediumtext DEFAULT NULL,
+  PRIMARY KEY (`pkey`),
+  KEY `course_id` (`course_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4096 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cll_mv_major_degrees
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_mv_major_degrees`;
+CREATE TABLE `cll_mv_major_degrees` (
+  `pkey` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `user_canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `user_name` varchar(256) DEFAULT NULL,
+  `degree_name` mediumtext DEFAULT NULL,
+  `all_degree_names` mediumtext DEFAULT NULL,
+  `enrollment_split` mediumtext DEFAULT NULL,
+  `latest_enrollment_dates` mediumtext DEFAULT NULL,
+  `total_core_enrollment_count` decimal(42,0) DEFAULT NULL,
+  `ia_enrollment_count` decimal(42,0) DEFAULT NULL,
+  `other_enrollment_count` decimal(42,0) DEFAULT NULL,
+  `total_enrollment_count` decimal(42,0) DEFAULT NULL,
+  `account_id` mediumtext DEFAULT NULL,
+  PRIMARY KEY (`pkey`),
+  KEY `user_id` (`user_id`),
+  KEY `user_canvas_id` (`user_canvas_id`),
+  KEY `account_id` (`account_id`(768)),
+  KEY `degree_name` (`degree_name`(768))
+) ENGINE=InnoDB AUTO_INCREMENT=16383 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cll_mv_submission_states
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_mv_submission_states`;
+CREATE TABLE `cll_mv_submission_states` (
+  `pkey` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `export_cutoff_AEST` datetime DEFAULT NULL,
+  `enrollment_created_at` datetime DEFAULT NULL,
+  `course_account` varchar(256) DEFAULT NULL,
+  `student_degree` mediumtext DEFAULT NULL,
+  `student_name` varchar(256) DEFAULT NULL,
+  `collarts_student_id` varchar(256) DEFAULT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `enrollment_id` bigint(20) unsigned NOT NULL,
+  `course_id` bigint(20) unsigned DEFAULT NULL,
+  `course_code` varchar(256) DEFAULT NULL,
+  `course_name` varchar(256) DEFAULT NULL,
+  `term_map` varchar(256) DEFAULT NULL,
+  `assignment_id` bigint(20) unsigned NOT NULL,
+  `assignment_group_name` varchar(255) DEFAULT NULL,
+  `assignment_title` varchar(256) DEFAULT NULL,
+  `assignment_type` varchar(256) DEFAULT NULL,
+  `assignment_workflow_state` enum('unpublished','published','deleted','fail_to_import') DEFAULT NULL,
+  `original_due_at` datetime DEFAULT NULL,
+  `override_due_at` datetime DEFAULT NULL,
+  `calculated_due_at` datetime DEFAULT NULL,
+  `calculated_due_state` varchar(11) DEFAULT NULL,
+  `submission_workflow_state` varchar(17) DEFAULT NULL,
+  `simple_submitted_state` varchar(13) NOT NULL,
+  `calculated_late_state` varchar(16) DEFAULT NULL,
+  `calculated_late_days` decimal(24,4) DEFAULT NULL,
+  `calculated_submission_updated_at` datetime DEFAULT NULL,
+  `submitted_at` datetime DEFAULT NULL,
+  `graded_at` datetime DEFAULT NULL,
+  `assignment_group_canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `assignment_group_total_weight` double DEFAULT NULL,
+  `calculated_assignment_weight` double DEFAULT NULL,
+  `score_weighted_contribution` double DEFAULT NULL,
+  `assignment_group_sum_possible` double DEFAULT NULL,
+  `assignment_points_possible` double DEFAULT NULL,
+  `score_raw` float DEFAULT NULL,
+  `score_percent` double DEFAULT NULL,
+  `grade_raw` varchar(256) DEFAULT NULL,
+  `assignment_url` varchar(94) DEFAULT NULL,
+  `speedgrader_url` varchar(151) DEFAULT NULL,
+  `teacher_list` mediumtext DEFAULT NULL,
+  PRIMARY KEY (`pkey`),
+  KEY `user_id` (`user_id`),
+  KEY `enrollment_id` (`enrollment_id`),
+  KEY `course_id` (`course_id`),
+  KEY `assignment_id` (`assignment_id`),
+  KEY `assignment_group_canvas_id` (`assignment_group_canvas_id`),
+  KEY `enrollment_created_at` (`enrollment_created_at`),
+  KEY `original_due_at` (`original_due_at`),
+  KEY `calculated_due_at` (`calculated_due_at`),
+  KEY `submitted_at` (`submitted_at`),
+  KEY `graded_at` (`graded_at`),
+  KEY `collarts_student_id` (`collarts_student_id`),
+  KEY `course_code` (`course_code`),
+  KEY `term_map` (`term_map`)
+) ENGINE=InnoDB AUTO_INCREMENT=131071 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for cll_mv_term_names
+-- ----------------------------
+DROP TABLE IF EXISTS `cll_mv_term_names`;
+CREATE TABLE `cll_mv_term_names` (
+  `pkey` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `term_id` bigint(20) unsigned NOT NULL,
+  `canvas_id` bigint(20) unsigned DEFAULT NULL,
+  `root_account_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(256) DEFAULT NULL,
+  `sortable_name` varchar(256) DEFAULT NULL,
+  `date_start` datetime DEFAULT NULL,
+  `date_end` datetime DEFAULT NULL,
+  `sis_source_id` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`pkey`),
+  KEY `term_id` (`term_id`),
+  KEY `canvas_id` (`canvas_id`),
+  KEY `name` (`name`),
+  KEY `sortable_name` (`sortable_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for cll_rubric_associations
 -- ----------------------------
 DROP TABLE IF EXISTS `cll_rubric_associations`;
@@ -700,7 +897,7 @@ CREATE TABLE `cll_submissions` (
   `graded_anonymously` enum('graded_anonymously','not_graded_anonymously') DEFAULT NULL,
   `has_rubric_assessment` enum('false','true') DEFAULT NULL,
   `excused` tinyint(4) DEFAULT NULL,
-  `url` varchar(256) DEFAULT NULL,
+  `url` varchar(1024) DEFAULT NULL,
   `body` longtext DEFAULT NULL,
   `cll_retrieved_at` datetime DEFAULT NULL,
   PRIMARY KEY (`canvas_id`),
@@ -2623,7 +2820,7 @@ CREATE TABLE `requests` (
   KEY `web_application_controller` (`web_application_controller`),
   KEY `web_application_action` (`web_application_action`),
   KEY `web_application_context_type` (`web_application_context_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=151990109 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=226251155 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for role_dim
@@ -2954,7 +3151,13 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `ls_monitored_accounts_he
 -- View structure for vw_assignment_due_dates
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_assignment_due_dates`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_due_dates` AS select `e`.`user_id` AS `user_id`,`staleA`.`course_id` AS `course_id`,`e`.`id` AS `enrollment_id`,`staleA`.`id` AS `assignment_id`,`liveA`.`canvas_id` AS `assignment_canvas_id`,`c`.`enrollment_term_id` AS `enrollment_term_id`,`e`.`created_at` AS `enrollment_created_at`,`liveC`.`start_at` AS `course_start`,`liveC`.`end_at` AS `course_end`,`t`.`date_start` AS `term_start`,`t`.`date_end` AS `term_end`,`ovu`.`assignment_override_id` AS `assignment_override_id`,`liveA`.`unlock_at` AS `original_unlock_at`,`liveA`.`due_at` AS `original_due_at`,`liveA`.`lock_at` AS `original_lock_at`,`ov`.`unlock_at` AS `override_unlock_at`,`ov`.`due_at` AS `override_due_at`,`ov`.`lock_at` AS `override_lock_at`,`ov`.`unlock_at_overridden` AS `overridden_unlock_flag`,`ov`.`due_at_overridden` AS `overridden_due_flag`,`ov`.`lock_at_overridden` AS `overridden_lock_flag`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`start_at` is not null,`liveC`.`start_at`,`t`.`date_start`) AS `calculated_course_start`,if(`ov`.`unlock_at` is not null,`ov`.`unlock_at`,`liveA`.`unlock_at`) AS `calculated_unlock_at`,if(`ov`.`due_at` is not null,`ov`.`due_at`,`liveA`.`due_at`) AS `calculated_due_at`,if(`ov`.`lock_at` is not null,`ov`.`lock_at`,`liveA`.`lock_at`) AS `calculated_lock_at`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`end_at` is not null,`liveC`.`end_at`,`t`.`date_end`) AS `calculated_course_end`,if(utc_timestamp() >= if(`ov`.`due_at` is not null,`ov`.`due_at`,`liveA`.`due_at`),'due','not_yet_due') AS `calculated_due_state` from (((((((`course_dim` `c` join `cll_courses` `liveC` on(`liveC`.`canvas_id` = `c`.`canvas_id`)) join `cll_assignments` `liveA` on(`liveA`.`course_canvas_id` = `c`.`canvas_id` and `liveA`.`workflow_state` <> 'deleted' and `c`.`workflow_state` <> 'deleted')) join `assignment_dim` `staleA` on(`staleA`.`canvas_id` = `liveA`.`canvas_id`)) join `enrollment_term_dim` `t` on(`t`.`id` = `c`.`enrollment_term_id`)) left join `enrollment_dim` `e` on(`e`.`course_id` = `c`.`id` and `e`.`type` = 'StudentEnrollment' and `e`.`workflow_state` not in ('deleted','inactive','rejected'))) left join `assignment_override_user_dim` `ovu` on(`ovu`.`user_id` = `e`.`user_id` and `ovu`.`assignment_id` = `staleA`.`id` and exists(select 1 from `assignment_override_dim` `ao` where `ao`.`id` = `ovu`.`assignment_override_id` and `ao`.`workflow_state` <> 'deleted' limit 1))) left join `assignment_override_dim` `ov` on(`ov`.`id` = `ovu`.`assignment_override_id`));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_due_dates` AS select `e`.`user_id` AS `user_id`,`staleA`.`course_id` AS `course_id`,`e`.`id` AS `enrollment_id`,`staleA`.`id` AS `assignment_id`,`liveA`.`canvas_id` AS `assignment_canvas_id`,`c`.`enrollment_term_id` AS `enrollment_term_id`,`e`.`created_at` AS `enrollment_created_at`,`liveC`.`start_at` AS `course_start`,`liveC`.`end_at` AS `course_end`,`t`.`date_start` AS `term_start`,`t`.`date_end` AS `term_end`,`ovu`.`assignment_override_id` AS `assignment_override_id`,`liveA`.`unlock_at` AS `original_unlock_at`,`liveA`.`due_at` AS `original_due_at`,`liveA`.`lock_at` AS `original_lock_at`,`ov`.`unlock_at` AS `override_unlock_at`,`ov`.`due_at` AS `override_due_at`,`ov`.`lock_at` AS `override_lock_at`,`ov`.`unlock_at_overridden` AS `overridden_unlock_flag`,`ov`.`due_at_overridden` AS `overridden_due_flag`,`ov`.`lock_at_overridden` AS `overridden_lock_flag`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`start_at` is not null,`liveC`.`start_at`,`t`.`date_start`) AS `calculated_course_start`,if(`ov`.`unlock_at` is not null,`ov`.`unlock_at`,`liveA`.`unlock_at`) AS `calculated_unlock_at`,if(`ov`.`due_at` is not null,`ov`.`due_at`,`liveA`.`due_at`) AS `calculated_due_at`,if(`ov`.`lock_at` is not null,`ov`.`lock_at`,`liveA`.`lock_at`) AS `calculated_lock_at`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`end_at` is not null,`liveC`.`end_at`,`t`.`date_end`) AS `calculated_course_end`,if(utc_timestamp() >= if(`ov`.`due_at` is not null,`ov`.`due_at`,`liveA`.`due_at`),'due','not_yet_due') AS `calculated_due_state` from (((((((((`course_dim` `c` join `cll_courses` `liveC` on(`liveC`.`canvas_id` = `c`.`canvas_id`)) join `cll_assignments` `liveA` on(`liveA`.`course_canvas_id` = `c`.`canvas_id` and `liveA`.`workflow_state` <> 'deleted' and `c`.`workflow_state` <> 'deleted')) join `enrollment_term_dim` `t` on(`t`.`id` = `c`.`enrollment_term_id`)) join `enrollment_dim` `e` on(`e`.`course_id` = `c`.`id` and `e`.`type` = 'StudentEnrollment' and `e`.`workflow_state` not in ('deleted','inactive','rejected'))) join `user_dim` `u` on(`u`.`id` = `e`.`user_id`)) join `cll_submissions` `liveS` on(`liveS`.`assignment_canvas_id` = `liveA`.`canvas_id` and `liveS`.`user_canvas_id` = `u`.`canvas_id`)) left join `assignment_dim` `staleA` on(`staleA`.`canvas_id` = `liveS`.`assignment_canvas_id`)) left join `assignment_override_user_dim` `ovu` on(`ovu`.`user_id` = `e`.`user_id` and `ovu`.`assignment_id` = `staleA`.`id` and exists(select 1 from `assignment_override_dim` `ao` where `ao`.`id` = `ovu`.`assignment_override_id` and `ao`.`workflow_state` <> 'deleted' limit 1))) left join `assignment_override_dim` `ov` on(`ov`.`id` = `ovu`.`assignment_override_id`));
+
+-- ----------------------------
+-- View structure for vw_assignment_due_dates_ bak
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_assignment_due_dates_ bak`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_due_dates_ bak` AS select `e`.`user_id` AS `user_id`,`staleA`.`course_id` AS `course_id`,`e`.`id` AS `enrollment_id`,`staleA`.`id` AS `assignment_id`,`liveA`.`canvas_id` AS `assignment_canvas_id`,`c`.`enrollment_term_id` AS `enrollment_term_id`,`e`.`created_at` AS `enrollment_created_at`,`liveC`.`start_at` AS `course_start`,`liveC`.`end_at` AS `course_end`,`t`.`date_start` AS `term_start`,`t`.`date_end` AS `term_end`,`ovu`.`assignment_override_id` AS `assignment_override_id`,`liveA`.`unlock_at` AS `original_unlock_at`,`liveA`.`due_at` AS `original_due_at`,`liveA`.`lock_at` AS `original_lock_at`,`ov`.`unlock_at` AS `override_unlock_at`,`ov`.`due_at` AS `override_due_at`,`ov`.`lock_at` AS `override_lock_at`,`ov`.`unlock_at_overridden` AS `overridden_unlock_flag`,`ov`.`due_at_overridden` AS `overridden_due_flag`,`ov`.`lock_at_overridden` AS `overridden_lock_flag`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`start_at` is not null,`liveC`.`start_at`,`t`.`date_start`) AS `calculated_course_start`,if(`ov`.`unlock_at` is not null,`ov`.`unlock_at`,`liveA`.`unlock_at`) AS `calculated_unlock_at`,if(`ov`.`due_at` is not null,`ov`.`due_at`,`liveA`.`due_at`) AS `calculated_due_at`,if(`ov`.`lock_at` is not null,`ov`.`lock_at`,`liveA`.`lock_at`) AS `calculated_lock_at`,if(`liveC`.`restrict_enrollments_to_course_dates` = 'true' and `liveC`.`end_at` is not null,`liveC`.`end_at`,`t`.`date_end`) AS `calculated_course_end`,if(utc_timestamp() >= if(`ov`.`due_at` is not null,`ov`.`due_at`,`liveA`.`due_at`),'due','not_yet_due') AS `calculated_due_state` from (((((((`course_dim` `c` join `cll_courses` `liveC` on(`liveC`.`canvas_id` = `c`.`canvas_id`)) join `cll_assignments` `liveA` on(`liveA`.`course_canvas_id` = `c`.`canvas_id` and `liveA`.`workflow_state` <> 'deleted' and `c`.`workflow_state` <> 'deleted')) join `assignment_dim` `staleA` on(`staleA`.`canvas_id` = `liveA`.`canvas_id`)) join `enrollment_term_dim` `t` on(`t`.`id` = `c`.`enrollment_term_id`)) left join `enrollment_dim` `e` on(`e`.`course_id` = `c`.`id` and `e`.`type` = 'StudentEnrollment' and `e`.`workflow_state` not in ('deleted','inactive','rejected'))) left join `assignment_override_user_dim` `ovu` on(`ovu`.`user_id` = `e`.`user_id` and `ovu`.`assignment_id` = `staleA`.`id` and exists(select 1 from `assignment_override_dim` `ao` where `ao`.`id` = `ovu`.`assignment_override_id` and `ao`.`workflow_state` <> 'deleted' limit 1))) left join `assignment_override_dim` `ov` on(`ov`.`id` = `ovu`.`assignment_override_id`));
 
 -- ----------------------------
 -- View structure for vw_assignment_rubrics
@@ -2972,13 +3175,31 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_types` AS 
 -- View structure for vw_assignment_weights
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_assignment_weights`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_weights` AS select `a`.`id` AS `assignment_id`,`agroupf`.`assignment_group_id` AS `assignment_group_id`,`a`.`title` AS `title`,`a`.`workflow_state` AS `workflow_state`,`gsum`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`a`.`points_possible` AS `assignment_points_possible`,`a`.`points_possible` / `gsum`.`assignment_group_sum_possible` * `agroupf`.`group_weight` AS `calculated_assignment_weight`,`agroupf`.`group_weight` AS `assignment_group_total_weight` from (((`canvas_data`.`assignment_dim` `a` join `canvas_data`.`assignment_group_fact` `agroupf` on(`a`.`assignment_group_id` = `agroupf`.`assignment_group_id`)) join `canvas_data`.`assignment_group_dim` `agroup` on(`agroup`.`id` = `agroupf`.`assignment_group_id`)) join (select `afact`.`assignment_group_id` AS `assignment_group_id`,sum(`afact`.`points_possible`) AS `assignment_group_sum_possible` from (`canvas_data`.`assignment_fact` `afact` join `canvas_data`.`assignment_dim` `a2` on(`afact`.`assignment_id` = `a2`.`id` and `a2`.`workflow_state` <> 'deleted')) group by `afact`.`assignment_group_id`) `gsum` on(`a`.`assignment_group_id` = `gsum`.`assignment_group_id`));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_weights` AS select `a`.`id` AS `assignment_id`,`agroupf`.`assignment_group_id` AS `assignment_group_id`,`agroup`.`name` AS `assignment_group_name`,`a`.`title` AS `title`,`a`.`workflow_state` AS `workflow_state`,`gsum`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`a`.`points_possible` AS `assignment_points_possible`,`a`.`points_possible` / `gsum`.`assignment_group_sum_possible` * `agroupf`.`group_weight` AS `calculated_assignment_weight`,`agroupf`.`group_weight` AS `assignment_group_total_weight` from (((`canvas_data`.`assignment_dim` `a` join `canvas_data`.`assignment_group_fact` `agroupf` on(`a`.`assignment_group_id` = `agroupf`.`assignment_group_id`)) join `canvas_data`.`assignment_group_dim` `agroup` on(`agroup`.`id` = `agroupf`.`assignment_group_id`)) join (select `afact`.`assignment_group_id` AS `assignment_group_id`,sum(`afact`.`points_possible`) AS `assignment_group_sum_possible` from (`canvas_data`.`assignment_fact` `afact` join `canvas_data`.`assignment_dim` `a2` on(`afact`.`assignment_id` = `a2`.`id` and `a2`.`workflow_state` = 'published')) group by `afact`.`assignment_group_id`) `gsum` on(`a`.`assignment_group_id` = `gsum`.`assignment_group_id`));
+
+-- ----------------------------
+-- View structure for vw_assignment_weights_per_student
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_assignment_weights_per_student`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_weights_per_student` AS select `u`.`id` AS `user_id`,`liveS`.`canvas_id` AS `submission_canvas_id`,`a`.`id` AS `assignment_id`,`liveA`.`canvas_id` AS `assignment_canvas_id`,`liveAGroup`.`canvas_id` AS `assignment_group_canvas_id`,`liveAGroup`.`name` AS `assignment_group_name`,`liveA`.`title` AS `title`,`liveA`.`workflow_state` AS `workflow_state`,`livegsum`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`liveA`.`points_possible` AS `assignment_points_possible`,`liveA`.`points_possible` / nullif(`livegsum`.`assignment_group_sum_possible` * `liveAGroup`.`group_weight`,0) AS `calculated_assignment_weight`,`liveAGroup`.`group_weight` AS `assignment_group_total_weight` from (((((`canvas_data`.`cll_submissions` `liveS` join `canvas_data`.`user_dim` `u` on(`u`.`canvas_id` = `liveS`.`user_canvas_id`)) join `canvas_data`.`cll_assignments` `liveA` on(`liveA`.`canvas_id` = `liveS`.`assignment_canvas_id`)) join `canvas_data`.`cll_assignment_groups` `liveAGroup` on(`liveAGroup`.`canvas_id` = `liveA`.`assignment_group_canvas_id`)) left join `canvas_data`.`assignment_dim` `a` on(`a`.`canvas_id` = `liveA`.`canvas_id`)) join (select `liveS2`.`user_canvas_id` AS `user_canvas_id`,`liveA2`.`assignment_group_canvas_id` AS `assignment_group_canvas_id`,sum(`liveA2`.`points_possible`) AS `assignment_group_sum_possible` from (`canvas_data`.`cll_submissions` `liveS2` join `canvas_data`.`cll_assignments` `liveA2` on(`liveA2`.`canvas_id` = `liveS2`.`assignment_canvas_id` and `liveA2`.`workflow_state` = 'published')) group by `liveS2`.`user_canvas_id`,`liveA2`.`assignment_group_canvas_id`) `liveGSum` on(`livegsum`.`user_canvas_id` = `u`.`canvas_id` and `livegsum`.`assignment_group_canvas_id` = `liveA`.`assignment_group_canvas_id`));
+
+-- ----------------------------
+-- View structure for vw_assignment_weights_per_student_bak
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_assignment_weights_per_student_bak`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_assignment_weights_per_student_bak` AS select `u`.`id` AS `user_id`,`liveS`.`canvas_id` AS `submission_canvas_id`,`a`.`id` AS `assignment_id`,`agroupf`.`assignment_group_id` AS `assignment_group_id`,`agroup`.`name` AS `assignment_group_name`,`a`.`title` AS `title`,`a`.`workflow_state` AS `workflow_state`,`gsum`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`a`.`points_possible` AS `assignment_points_possible`,`a`.`points_possible` / `gsum`.`assignment_group_sum_possible` * `agroupf`.`group_weight` AS `calculated_assignment_weight`,`agroupf`.`group_weight` AS `assignment_group_total_weight` from (((((`canvas_data`.`cll_submissions` `liveS` join `canvas_data`.`user_dim` `u` on(`u`.`canvas_id` = `liveS`.`user_canvas_id`)) join `canvas_data`.`assignment_dim` `a` on(`a`.`canvas_id` = `liveS`.`assignment_canvas_id`)) join `canvas_data`.`assignment_group_fact` `agroupf` on(`a`.`assignment_group_id` = `agroupf`.`assignment_group_id`)) join `canvas_data`.`assignment_group_dim` `agroup` on(`agroup`.`id` = `agroupf`.`assignment_group_id`)) join (select `liveS2`.`user_canvas_id` AS `user_canvas_id`,`a2`.`assignment_group_id` AS `assignment_group_id`,sum(`afact`.`points_possible`) AS `assignment_group_sum_possible` from ((`canvas_data`.`cll_submissions` `liveS2` join `canvas_data`.`assignment_dim` `a2` on(`a2`.`canvas_id` = `liveS2`.`assignment_canvas_id` and `a2`.`workflow_state` = 'published')) join `canvas_data`.`assignment_fact` `afact` on(`afact`.`assignment_id` = `a2`.`id`)) group by `liveS2`.`user_canvas_id`,`a2`.`assignment_group_id`) `gsum` on(`gsum`.`user_canvas_id` = `u`.`canvas_id` and `gsum`.`assignment_group_id` = `a`.`assignment_group_id`));
+
+-- ----------------------------
+-- View structure for vw_cll_assignment_types
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_cll_assignment_types`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_cll_assignment_types` AS select `live_a`.`canvas_id` AS `assignment_canvas_id`,`live_a`.`title` AS `title`,`live_a`.`workflow_state` AS `workflow_state`,if(`live_a`.`submission_types` <> 'external_tool',`live_a`.`submission_types`,`tool`.`name`) AS `assignment_type` from (`cll_assignments` `live_a` left join `external_tool_activation_dim` `tool` on(`live_a`.`external_tool_canvas_id` = `tool`.`canvas_id`));
 
 -- ----------------------------
 -- View structure for vw_course_teacher_list
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_course_teacher_list`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_course_teacher_list` AS select `c`.`id` AS `course_id`,group_concat(distinct `teacher`.`name` separator ', ') AS `teacher_list` from ((`course_dim` `c` left join `enrollment_dim` `te` on(`te`.`course_id` = `c`.`id` and (`te`.`type` = 'TeacherEnrollment' or `te`.`type` = 'TaEnrollment'))) left join `user_dim` `teacher` on(`teacher`.`id` = `te`.`user_id`)) group by `te`.`course_id` order by `teacher`.`created_at`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_course_teacher_list` AS select `c`.`id` AS `course_id`,group_concat(distinct `teacher`.`name` separator ', ') AS `teacher_list` from ((`course_dim` `c` left join `enrollment_dim` `te` on(`te`.`course_id` = `c`.`id` and (`te`.`type` = 'TeacherEnrollment' or `te`.`type` = 'TaEnrollment') and `te`.`workflow_state` = 'active')) left join `user_dim` `teacher` on(`teacher`.`id` = `te`.`user_id`)) group by `te`.`course_id` order by `teacher`.`created_at`;
 
 -- ----------------------------
 -- View structure for vw_degree_prevalence
@@ -3026,19 +3247,13 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_counts_by_
 -- View structure for vw_submission_states
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_submission_states`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_states` AS select convert_tz((select min(`exports`.`cll_retrieved_at`) from `canvas_data`.`cll_submissions` `exports`),'UTC','Australia/Melbourne') AS `export_cutoff_AEST`,`e`.`created_at` AS `enrollment_created_at`,`acc`.`name` AS `course_account`,`d`.`degree_name` AS `student_degree`,`u`.`name` AS `student_name`,`pseudo`.`sis_user_id` AS `collarts_student_id`,`u`.`id` AS `user_id`,`e`.`id` AS `enrollment_id`,`e`.`course_id` AS `course_id`,`c`.`code` AS `course_code`,`c`.`name` AS `course_name`,`vt`.`sortable_name` AS `term_map`,`staleA`.`canvas_id` AS `assignment_id`,`liveA`.`title` AS `assignment_title`,if(`liveA`.`submission_types` <> 'external_tool',`liveA`.`submission_types`,`tool`.`name`) AS `assignment_type`,`liveA`.`workflow_state` AS `assignment_workflow_state`,`ad`.`original_due_at` AS `original_due_at`,`ad`.`override_due_at` AS `override_due_at`,`ad`.`calculated_due_at` AS `calculated_due_at`,`ad`.`calculated_due_state` AS `calculated_due_state`,case `liveS`.`workflow_state` when 'unsubmitted' then '1_unsubmitted' when 'submitted' then '2_submitted' when 'pending_review' then '3_pending_review' when 'graded' then '4_graded' else if(`liveS`.`workflow_state` is null,'0_null_submission',`liveS`.`workflow_state`) end AS `submission_workflow_state`,if(`liveS`.`submitted_at` is null,'1_unsubmitted','2_submitted') AS `simple_submitted_state`,if(`liveS`.`submitted_at` <= `ad`.`calculated_due_at`,'submitted_ontime',if(`liveS`.`submitted_at` > `ad`.`calculated_due_at`,'submitted_late',if(`liveS`.`submitted_at` is null and `liveS`.`workflow_state` = 'graded','graded_nosub',if(`liveS`.`submitted_at` is null and `ad`.`calculated_due_at` <= utc_timestamp(),'overdue','not_yet_due')))) AS `calculated_late_state`,if(`liveS`.`submitted_at` is null,NULL,round(timestampdiff(MINUTE,`ad`.`calculated_due_at`,`liveS`.`submitted_at`) / (24 * 60),4)) AS `calculated_late_days`,if(`liveS`.`graded_at` > `liveS`.`submitted_at`,`liveS`.`graded_at`,`liveS`.`submitted_at`) AS `calculated_submission_updated_at`,`liveS`.`submitted_at` AS `submitted_at`,`liveA`.`assignment_group_canvas_id` AS `assignment_group_canvas_id`,`aweight`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`aweight`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`liveS`.`score` / `aweight`.`assignment_group_sum_possible` * `aweight`.`assignment_group_total_weight` / 100 AS `score_weighted_contribution`,`aweight`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`liveA`.`points_possible` AS `assignment_points_possible`,`liveS`.`score` AS `score_raw`,`liveS`.`score` / `liveA`.`points_possible` AS `score_percent`,`liveS`.`grade` AS `grade_raw`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/assignments/',`liveA`.`canvas_id`) AS `assignment_url`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/gradebook/speed_grader?assignment_id=',`liveA`.`canvas_id`,'&student_id=',`u`.`canvas_id`) AS `speedgrader_url`,`teachers`.`teacher_list` AS `teacher_list` from ((((((((((((((`canvas_data`.`enrollment_dim` `e` join `canvas_data`.`user_dim` `u` on(`e`.`user_id` = `u`.`id`)) left join `canvas_data`.`pseudonym_dim` `pseudo` on(`pseudo`.`user_id` = `u`.`id` and `pseudo`.`sis_user_id` is not null)) join `canvas_data`.`course_dim` `c` on(`e`.`course_id` = `c`.`id`)) join `canvas_data`.`account_dim` `acc` on(`acc`.`id` = `c`.`account_id`)) join `canvas_data`.`vw_course_teacher_list` `teachers` on(`teachers`.`course_id` = `c`.`id`)) join `canvas_data`.`enrollment_fact` `ef` on(`e`.`id` = `ef`.`enrollment_id`)) join `canvas_data`.`cll_assignments` `liveA` on(`c`.`canvas_id` = `liveA`.`course_canvas_id`)) join `canvas_data`.`assignment_dim` `staleA` on(`staleA`.`canvas_id` = `liveA`.`canvas_id`)) join `canvas_data`.`vw_assignment_due_dates` `ad` on(`ad`.`user_id` = `u`.`id` and `ad`.`assignment_canvas_id` = `liveA`.`canvas_id`)) join `canvas_data`.`vw_assignment_weights` `aweight` on(`aweight`.`assignment_id` = `staleA`.`id`)) left join `canvas_data`.`vw_major_degrees` `d` on(`d`.`user_id` = `u`.`id`)) left join `canvas_data`.`vw_term_names` `vt` on(`ef`.`enrollment_term_id` = `vt`.`term_id`)) left join `canvas_data`.`cll_submissions` `liveS` on(`liveA`.`canvas_id` = `liveS`.`assignment_canvas_id` and `liveS`.`user_canvas_id` = `u`.`canvas_id` and (`liveS`.`workflow_state` is null or `liveS`.`workflow_state` <> 'deleted'))) left join `canvas_data`.`external_tool_activation_dim` `tool` on(`liveA`.`external_tool_canvas_id` = `tool`.`canvas_id`)) where `liveA`.`workflow_state` = 'published' and `e`.`type` = 'StudentEnrollment' and `e`.`workflow_state` = 'active' and `e`.`created_at` >= '2019-08-01';
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_states` AS select convert_tz((select min(`exports`.`cll_retrieved_at`) from `canvas_data`.`cll_submissions` `exports`),'UTC','Australia/Melbourne') AS `export_cutoff_AEST`,`e`.`created_at` AS `enrollment_created_at`,`acc`.`name` AS `course_account`,`d`.`degree_name` AS `student_degree`,`u`.`name` AS `student_name`,`pseudo`.`sis_user_id` AS `collarts_student_id`,`u`.`id` AS `user_id`,`e`.`id` AS `enrollment_id`,`e`.`course_id` AS `course_id`,`c`.`code` AS `course_code`,`c`.`name` AS `course_name`,`vt`.`sortable_name` AS `term_map`,`staleA`.`id` AS `assignment_id`,`liveA`.`title` AS `assignment_title`,if(`liveA`.`submission_types` <> 'external_tool',`liveA`.`submission_types`,`tool`.`name`) AS `assignment_type`,`liveA`.`workflow_state` AS `assignment_workflow_state`,`ad`.`original_due_at` AS `original_due_at`,`ad`.`override_due_at` AS `override_due_at`,`ad`.`calculated_due_at` AS `calculated_due_at`,`ad`.`calculated_due_state` AS `calculated_due_state`,case `liveS`.`workflow_state` when 'unsubmitted' then '1_unsubmitted' when 'submitted' then '2_submitted' when 'pending_review' then '3_pending_review' when 'graded' then '4_graded' else if(`liveS`.`workflow_state` is null,'0_null_submission',`liveS`.`workflow_state`) end AS `submission_workflow_state`,if(`liveS`.`submitted_at` is null,'1_unsubmitted','2_submitted') AS `simple_submitted_state`,if(`liveS`.`submitted_at` <= `ad`.`calculated_due_at`,'submitted_ontime',if(`liveS`.`submitted_at` > `ad`.`calculated_due_at`,'submitted_late',if(`liveS`.`submitted_at` is null and `liveS`.`workflow_state` = 'graded','graded_nosub',if(`liveS`.`submitted_at` is null and `ad`.`calculated_due_at` <= utc_timestamp(),'overdue','not_yet_due')))) AS `calculated_late_state`,if(`liveS`.`submitted_at` is null,NULL,round(timestampdiff(MINUTE,`ad`.`calculated_due_at`,`liveS`.`submitted_at`) / (24 * 60),4)) AS `calculated_late_days`,if(`liveS`.`graded_at` > `liveS`.`submitted_at`,`liveS`.`graded_at`,`liveS`.`submitted_at`) AS `calculated_submission_updated_at`,`liveS`.`submitted_at` AS `submitted_at`,`liveA`.`assignment_group_canvas_id` AS `assignment_group_canvas_id`,`aweight`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`aweight`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`liveS`.`score` / `aweight`.`assignment_group_sum_possible` * `aweight`.`assignment_group_total_weight` / 100 AS `score_weighted_contribution`,`aweight`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`liveA`.`points_possible` AS `assignment_points_possible`,`liveS`.`score` AS `score_raw`,`liveS`.`score` / `liveA`.`points_possible` AS `score_percent`,`liveS`.`grade` AS `grade_raw`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/assignments/',`liveA`.`canvas_id`) AS `assignment_url`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/gradebook/speed_grader?assignment_id=',`liveA`.`canvas_id`,'&student_id=',`u`.`canvas_id`) AS `speedgrader_url`,`teachers`.`teacher_list` AS `teacher_list` from ((((((((((((((`canvas_data`.`enrollment_dim` `e` join `canvas_data`.`user_dim` `u` on(`e`.`user_id` = `u`.`id`)) left join `canvas_data`.`pseudonym_dim` `pseudo` on(`pseudo`.`user_id` = `u`.`id` and `pseudo`.`sis_user_id` is not null)) join `canvas_data`.`course_dim` `c` on(`e`.`course_id` = `c`.`id`)) join `canvas_data`.`account_dim` `acc` on(`acc`.`id` = `c`.`account_id`)) join `canvas_data`.`vw_course_teacher_list` `teachers` on(`teachers`.`course_id` = `c`.`id`)) join `canvas_data`.`enrollment_fact` `ef` on(`e`.`id` = `ef`.`enrollment_id`)) join `canvas_data`.`cll_assignments` `liveA` on(`c`.`canvas_id` = `liveA`.`course_canvas_id`)) join `canvas_data`.`assignment_dim` `staleA` on(`staleA`.`canvas_id` = `liveA`.`canvas_id`)) join `canvas_data`.`vw_assignment_due_dates` `ad` on(`ad`.`user_id` = `u`.`id` and `ad`.`assignment_canvas_id` = `liveA`.`canvas_id`)) join `canvas_data`.`vw_assignment_weights` `aweight` on(`aweight`.`assignment_group_id` = `staleA`.`assignment_group_id`)) left join `canvas_data`.`vw_major_degrees` `d` on(`d`.`user_id` = `u`.`id`)) left join `canvas_data`.`vw_term_names` `vt` on(`ef`.`enrollment_term_id` = `vt`.`term_id`)) left join `canvas_data`.`cll_submissions` `liveS` on(`liveA`.`canvas_id` = `liveS`.`assignment_canvas_id` and `liveS`.`user_canvas_id` = `u`.`canvas_id` and (`liveS`.`workflow_state` is null or `liveS`.`workflow_state` <> 'deleted'))) left join `canvas_data`.`external_tool_activation_dim` `tool` on(`liveA`.`external_tool_canvas_id` = `tool`.`canvas_id`)) where `liveA`.`workflow_state` = 'published' and `e`.`type` = 'StudentEnrollment' and `e`.`workflow_state` = 'active' and `e`.`created_at` >= '2019-08-01';
 
 -- ----------------------------
--- View structure for vw_submission_states_aest_exportable
+-- View structure for vw_submission_states_wtfix_bak
 -- ----------------------------
-DROP VIEW IF EXISTS `vw_submission_states_aest_exportable`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_states_aest_exportable` AS select `subs`.`export_cutoff_AEST` AS `export_cutoff_AEST`,convert_tz(`subs`.`enrollment_created_at`,'UTC','Australia/Melbourne') AS `enrollment_created_at_AEST`,`subs`.`course_account` AS `course_account`,`subs`.`student_degree` AS `student_degree`,`subs`.`student_name` AS `student_name`,`subs`.`collarts_student_id` AS `collarts_student_id`,`subs`.`user_id` AS `user_id`,`subs`.`course_code` AS `course_code`,`subs`.`course_name` AS `course_name`,`subs`.`term_map` AS `term_map`,`subs`.`assignment_title` AS `assignment_title`,`subs`.`assignment_type` AS `assignment_type`,`subs`.`assignment_workflow_state` AS `assignment_workflow_state`,convert_tz(`subs`.`original_due_at`,'UTC','Australia/Melbourne') AS `original_due_at_AEST`,convert_tz(`subs`.`override_due_at`,'UTC','Australia/Melbourne') AS `override_due_at_AEST`,convert_tz(`subs`.`calculated_due_at`,'UTC','Australia/Melbourne') AS `calculated_due_at_AEST`,`subs`.`calculated_due_state` AS `calculated_due_state`,`subs`.`submission_workflow_state` AS `submission_workflow_state`,`subs`.`simple_submitted_state` AS `simple_submitted_state`,`subs`.`calculated_late_state` AS `calculated_late_state`,`subs`.`calculated_late_days` AS `calculated_late_days`,convert_tz(`subs`.`calculated_submission_updated_at`,'UTC','Australia/Melbourne') AS `calculated_submission_updated_at_AEST`,convert_tz(`subs`.`submitted_at`,'UTC','Australia/Melbourne') AS `submitted_at_AEST`,`subs`.`assignment_points_possible` AS `assignment_points_possible`,`subs`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`subs`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`subs`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`subs`.`assignment_url` AS `assignment_url`,`subs`.`speedgrader_url` AS `speedgrader_url` from `canvas_data`.`vw_submission_states` `subs` order by `subs`.`student_degree`,`subs`.`student_name`,`subs`.`enrollment_created_at` desc,`subs`.`course_account`,`subs`.`course_code`,`subs`.`calculated_due_at`;
-
--- ----------------------------
--- View structure for vw_submission_states_aest_he
--- ----------------------------
-DROP VIEW IF EXISTS `vw_submission_states_aest_he`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_states_aest_he` AS select `vw`.`export_cutoff_AEST` AS `export_cutoff_AEST`,`vw`.`enrollment_created_at_AEST` AS `enrollment_created_at_AEST`,`vw`.`course_account` AS `course_account`,`vw`.`student_degree` AS `student_degree`,`vw`.`student_name` AS `student_name`,`vw`.`collarts_student_id` AS `collarts_student_id`,`vw`.`user_id` AS `user_id`,`vw`.`course_code` AS `course_code`,`vw`.`course_name` AS `course_name`,`vw`.`term_map` AS `term_map`,`vw`.`assignment_title` AS `assignment_title`,`vw`.`assignment_type` AS `assignment_type`,`vw`.`assignment_workflow_state` AS `assignment_workflow_state`,`vw`.`original_due_at_AEST` AS `original_due_at_AEST`,`vw`.`override_due_at_AEST` AS `override_due_at_AEST`,`vw`.`calculated_due_at_AEST` AS `calculated_due_at_AEST`,`vw`.`calculated_due_state` AS `calculated_due_state`,`vw`.`submission_workflow_state` AS `submission_workflow_state`,`vw`.`simple_submitted_state` AS `simple_submitted_state`,`vw`.`calculated_late_state` AS `calculated_late_state`,`vw`.`calculated_late_days` AS `calculated_late_days`,`vw`.`calculated_submission_updated_at_AEST` AS `calculated_submission_updated_at_AEST`,`vw`.`submitted_at_AEST` AS `submitted_at_AEST`,`vw`.`assignment_points_possible` AS `assignment_points_possible`,`vw`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`vw`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`vw`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`vw`.`assignment_url` AS `assignment_url`,`vw`.`speedgrader_url` AS `speedgrader_url` from `canvas_data`.`vw_submission_states_aest_exportable` `vw` where `vw`.`course_account` in (select `ls_monitored_accounts_he`.`NAME` from `canvas_data`.`ls_monitored_accounts_he`) order by `vw`.`student_degree`,`vw`.`student_name`,`vw`.`enrollment_created_at_AEST` desc,`vw`.`course_account`,`vw`.`course_code`,`vw`.`calculated_due_at_AEST`;
+DROP VIEW IF EXISTS `vw_submission_states_wtfix_bak`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_submission_states_wtfix_bak` AS select convert_tz((select min(`exports`.`cll_retrieved_at`) from `canvas_data`.`cll_submissions` `exports`),'UTC','Australia/Melbourne') AS `export_cutoff_AEST`,`e`.`created_at` AS `enrollment_created_at`,`acc`.`name` AS `course_account`,`d`.`degree_name` AS `student_degree`,`u`.`name` AS `student_name`,`pseudo`.`sis_user_id` AS `collarts_student_id`,`u`.`id` AS `user_id`,`e`.`id` AS `enrollment_id`,`e`.`course_id` AS `course_id`,`c`.`code` AS `course_code`,`c`.`name` AS `course_name`,`vt`.`sortable_name` AS `term_map`,`staleA`.`id` AS `assignment_id`,`liveA`.`title` AS `assignment_title`,if(`liveA`.`submission_types` <> 'external_tool',`liveA`.`submission_types`,`tool`.`name`) AS `assignment_type`,`liveA`.`workflow_state` AS `assignment_workflow_state`,`ad`.`original_due_at` AS `original_due_at`,`ad`.`override_due_at` AS `override_due_at`,`ad`.`calculated_due_at` AS `calculated_due_at`,`ad`.`calculated_due_state` AS `calculated_due_state`,case `liveS`.`workflow_state` when 'unsubmitted' then '1_unsubmitted' when 'submitted' then '2_submitted' when 'pending_review' then '3_pending_review' when 'graded' then '4_graded' else if(`liveS`.`workflow_state` is null,'0_null_submission',`liveS`.`workflow_state`) end AS `submission_workflow_state`,if(`liveS`.`submitted_at` is null,'1_unsubmitted','2_submitted') AS `simple_submitted_state`,if(`liveS`.`submitted_at` <= `ad`.`calculated_due_at`,'submitted_ontime',if(`liveS`.`submitted_at` > `ad`.`calculated_due_at`,'submitted_late',if(`liveS`.`submitted_at` is null and `liveS`.`workflow_state` = 'graded','graded_nosub',if(`liveS`.`submitted_at` is null and `ad`.`calculated_due_at` <= utc_timestamp(),'overdue','not_yet_due')))) AS `calculated_late_state`,if(`liveS`.`submitted_at` is null,NULL,round(timestampdiff(MINUTE,`ad`.`calculated_due_at`,`liveS`.`submitted_at`) / (24 * 60),4)) AS `calculated_late_days`,if(`liveS`.`graded_at` > `liveS`.`submitted_at`,`liveS`.`graded_at`,`liveS`.`submitted_at`) AS `calculated_submission_updated_at`,`liveS`.`submitted_at` AS `submitted_at`,`liveA`.`assignment_group_canvas_id` AS `assignment_group_canvas_id`,`aweight`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`aweight`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`liveS`.`score` / `aweight`.`assignment_group_sum_possible` * `aweight`.`assignment_group_total_weight` / 100 AS `score_weighted_contribution`,`aweight`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`liveA`.`points_possible` AS `assignment_points_possible`,`liveS`.`score` AS `score_raw`,`liveS`.`score` / `liveA`.`points_possible` AS `score_percent`,`liveS`.`grade` AS `grade_raw`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/assignments/',`liveA`.`canvas_id`) AS `assignment_url`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/gradebook/speed_grader?assignment_id=',`liveA`.`canvas_id`,'&student_id=',`u`.`canvas_id`) AS `speedgrader_url`,`teachers`.`teacher_list` AS `teacher_list` from ((((((((((((((`canvas_data`.`enrollment_dim` `e` join `canvas_data`.`user_dim` `u` on(`e`.`user_id` = `u`.`id`)) join `canvas_data`.`course_dim` `c` on(`e`.`course_id` = `c`.`id`)) join `canvas_data`.`account_dim` `acc` on(`acc`.`id` = `c`.`account_id`)) join `canvas_data`.`vw_course_teacher_list` `teachers` on(`teachers`.`course_id` = `c`.`id`)) join `canvas_data`.`enrollment_fact` `ef` on(`e`.`id` = `ef`.`enrollment_id`)) join `canvas_data`.`cll_assignments` `liveA` on(`c`.`canvas_id` = `liveA`.`course_canvas_id`)) join `canvas_data`.`cll_submissions` `liveS` on(`liveA`.`canvas_id` = `liveS`.`assignment_canvas_id` and `liveS`.`user_canvas_id` = `u`.`canvas_id` and (`liveS`.`workflow_state` is null or `liveS`.`workflow_state` <> 'deleted'))) join `canvas_data`.`assignment_dim` `staleA` on(`staleA`.`canvas_id` = `liveA`.`canvas_id`)) join `canvas_data`.`vw_assignment_due_dates` `ad` on(`ad`.`user_id` = `u`.`id` and `ad`.`assignment_canvas_id` = `liveA`.`canvas_id`)) join `canvas_data`.`vw_assignment_weights_per_student` `aweight` on(`aweight`.`submission_canvas_id` = `liveS`.`canvas_id`)) left join `canvas_data`.`vw_major_degrees` `d` on(`d`.`user_id` = `u`.`id`)) left join `canvas_data`.`vw_term_names` `vt` on(`ef`.`enrollment_term_id` = `vt`.`term_id`)) left join `canvas_data`.`external_tool_activation_dim` `tool` on(`liveA`.`external_tool_canvas_id` = `tool`.`canvas_id`)) left join `canvas_data`.`pseudonym_dim` `pseudo` on(`pseudo`.`user_id` = `u`.`id` and `pseudo`.`sis_user_id` is not null)) where `liveA`.`workflow_state` = 'published' and `e`.`type` = 'StudentEnrollment' and `e`.`workflow_state` = 'active' and `e`.`created_at` >= '2019-08-01';
 
 -- ----------------------------
 -- View structure for vw_term_names
@@ -3075,6 +3290,24 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_url_pages` AS select 
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_url_quizzes`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_url_quizzes` AS select `fn_quiz_path`(`c`.`canvas_id`,`q`.`canvas_id`) AS `url_path`,'quiz' AS `context_type`,`q`.`canvas_id` AS `context_canvas_id`,`c`.`canvas_id` AS `course_canvas_id`,`acc`.`name` AS `account_name`,`c`.`code` AS `course_code`,`m`.`name` AS `module_name`,`m`.`position` AS `module_#`,`mi`.`position` AS `module_item_#`,`q`.`name` AS `display_name`,`fn_canvas_url`(`fn_quiz_path`(`c`.`canvas_id`,`q`.`canvas_id`)) AS `url`,`q`.`workflow_state` AS `context_workflow_state` from ((((`quiz_dim` `q` join `course_dim` `c` on(`c`.`id` = `q`.`course_id` and `q`.`workflow_state` <> 'deleted')) left join `module_item_dim` `mi` on(`mi`.`course_id` = `c`.`id` and `mi`.`quiz_id` = `q`.`id` and `mi`.`workflow_state` <> 'deleted')) left join `module_dim` `m` on(`m`.`id` = `mi`.`module_id`)) join `account_dim` `acc` on(`c`.`account_id` = `acc`.`id`)) order by `acc`.`name`,`c`.`code`,`m`.`position`,`mi`.`position`,`q`.`name`;
+
+-- ----------------------------
+-- View structure for vxm_submission_states_aest_exportable
+-- ----------------------------
+DROP VIEW IF EXISTS `vxm_submission_states_aest_exportable`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vxm_submission_states_aest_exportable` AS select `subs`.`export_cutoff_AEST` AS `export_cutoff_AEST`,convert_tz(`subs`.`enrollment_created_at`,'UTC','Australia/Melbourne') AS `enrollment_created_at_AEST`,`subs`.`course_account` AS `course_account`,`subs`.`student_degree` AS `student_degree`,`subs`.`student_name` AS `student_name`,`subs`.`collarts_student_id` AS `collarts_student_id`,`subs`.`user_id` AS `user_id`,`subs`.`course_code` AS `course_code`,`subs`.`course_name` AS `course_name`,`subs`.`term_map` AS `term_map`,`subs`.`assignment_title` AS `assignment_title`,`subs`.`assignment_type` AS `assignment_type`,`subs`.`assignment_workflow_state` AS `assignment_workflow_state`,convert_tz(`subs`.`original_due_at`,'UTC','Australia/Melbourne') AS `original_due_at_AEST`,convert_tz(`subs`.`override_due_at`,'UTC','Australia/Melbourne') AS `override_due_at_AEST`,convert_tz(`subs`.`calculated_due_at`,'UTC','Australia/Melbourne') AS `calculated_due_at_AEST`,`subs`.`calculated_due_state` AS `calculated_due_state`,`subs`.`submission_workflow_state` AS `submission_workflow_state`,`subs`.`simple_submitted_state` AS `simple_submitted_state`,`subs`.`calculated_late_state` AS `calculated_late_state`,`subs`.`calculated_late_days` AS `calculated_late_days`,convert_tz(`subs`.`calculated_submission_updated_at`,'UTC','Australia/Melbourne') AS `calculated_submission_updated_at_AEST`,convert_tz(`subs`.`submitted_at`,'UTC','Australia/Melbourne') AS `submitted_at_AEST`,`subs`.`assignment_points_possible` AS `assignment_points_possible`,`subs`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`subs`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`subs`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`subs`.`assignment_url` AS `assignment_url`,`subs`.`speedgrader_url` AS `speedgrader_url` from `cll_mv_submission_states` `subs` order by `subs`.`student_degree`,`subs`.`student_name`,`subs`.`enrollment_created_at` desc,`subs`.`course_account`,`subs`.`course_code`,`subs`.`calculated_due_at`;
+
+-- ----------------------------
+-- View structure for vxm_submission_states_aest_he
+-- ----------------------------
+DROP VIEW IF EXISTS `vxm_submission_states_aest_he`;
+CREATE ALGORITHM = TEMPTABLE SQL SECURITY DEFINER VIEW `vxm_submission_states_aest_he` AS select `vxm`.`export_cutoff_AEST` AS `export_cutoff_AEST`,`vxm`.`enrollment_created_at_AEST` AS `enrollment_created_at_AEST`,`vxm`.`course_account` AS `course_account`,`vxm`.`student_degree` AS `student_degree`,`vxm`.`student_name` AS `student_name`,`vxm`.`collarts_student_id` AS `collarts_student_id`,`vxm`.`user_id` AS `user_id`,`vxm`.`course_code` AS `course_code`,`vxm`.`course_name` AS `course_name`,`vxm`.`term_map` AS `term_map`,`vxm`.`assignment_title` AS `assignment_title`,`vxm`.`assignment_type` AS `assignment_type`,`vxm`.`assignment_workflow_state` AS `assignment_workflow_state`,`vxm`.`original_due_at_AEST` AS `original_due_at_AEST`,`vxm`.`override_due_at_AEST` AS `override_due_at_AEST`,`vxm`.`calculated_due_at_AEST` AS `calculated_due_at_AEST`,`vxm`.`calculated_due_state` AS `calculated_due_state`,`vxm`.`submission_workflow_state` AS `submission_workflow_state`,`vxm`.`simple_submitted_state` AS `simple_submitted_state`,`vxm`.`calculated_late_state` AS `calculated_late_state`,`vxm`.`calculated_late_days` AS `calculated_late_days`,`vxm`.`calculated_submission_updated_at_AEST` AS `calculated_submission_updated_at_AEST`,`vxm`.`submitted_at_AEST` AS `submitted_at_AEST`,`vxm`.`assignment_points_possible` AS `assignment_points_possible`,`vxm`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`vxm`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`vxm`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`vxm`.`assignment_url` AS `assignment_url`,`vxm`.`speedgrader_url` AS `speedgrader_url` from `vxm_submission_states_aest_exportable` `vxm` where `vxm`.`course_account` in (select `ls_monitored_accounts_he`.`NAME` from `ls_monitored_accounts_he`) order by `vxm`.`student_degree`,`vxm`.`student_name`,`vxm`.`enrollment_created_at_AEST` desc,`vxm`.`course_account`,`vxm`.`course_code`,`vxm`.`calculated_due_at_AEST`;
+
+-- ----------------------------
+-- View structure for vxm_submission_states_wtfix
+-- ----------------------------
+DROP VIEW IF EXISTS `vxm_submission_states_wtfix`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vxm_submission_states_wtfix` AS select convert_tz((select min(`exports`.`cll_retrieved_at`) from `cll_submissions` `exports`),'UTC','Australia/Melbourne') AS `export_cutoff_AEST`,`e`.`created_at` AS `enrollment_created_at`,`acc`.`name` AS `course_account`,`d`.`degree_name` AS `student_degree`,`u`.`name` AS `student_name`,`pseudo`.`sis_user_id` AS `collarts_student_id`,`u`.`id` AS `user_id`,`e`.`id` AS `enrollment_id`,`e`.`course_id` AS `course_id`,`c`.`code` AS `course_code`,`c`.`name` AS `course_name`,`vt`.`sortable_name` AS `term_map`,`staleA`.`id` AS `assignment_id`,`aweight`.`assignment_group_name` AS `assignment_group_name`,`liveA`.`title` AS `assignment_title`,if(`liveA`.`submission_types` <> 'external_tool',`liveA`.`submission_types`,`tool`.`name`) AS `assignment_type`,`liveA`.`workflow_state` AS `assignment_workflow_state`,`ad`.`original_due_at` AS `original_due_at`,`ad`.`override_due_at` AS `override_due_at`,`ad`.`calculated_due_at` AS `calculated_due_at`,`ad`.`calculated_due_state` AS `calculated_due_state`,case `liveS`.`workflow_state` when 'unsubmitted' then '1_unsubmitted' when 'submitted' then '2_submitted' when 'pending_review' then '3_pending_review' when 'graded' then '4_graded' else if(`liveS`.`workflow_state` is null,'0_null_submission',`liveS`.`workflow_state`) end AS `submission_workflow_state`,if(`liveS`.`submitted_at` is null,'1_unsubmitted','2_submitted') AS `simple_submitted_state`,if(`liveS`.`submitted_at` <= `ad`.`calculated_due_at`,'submitted_ontime',if(`liveS`.`submitted_at` > `ad`.`calculated_due_at`,'submitted_late',if(`liveS`.`submitted_at` is null and `liveS`.`workflow_state` = 'graded','graded_nosub',if(`liveS`.`submitted_at` is null and `ad`.`calculated_due_at` <= utc_timestamp(),'overdue','not_yet_due')))) AS `calculated_late_state`,if(`liveS`.`submitted_at` is null,NULL,round(timestampdiff(MINUTE,`ad`.`calculated_due_at`,`liveS`.`submitted_at`) / (24 * 60),4)) AS `calculated_late_days`,if(`liveS`.`graded_at` > `liveS`.`submitted_at`,`liveS`.`graded_at`,`liveS`.`submitted_at`) AS `calculated_submission_updated_at`,`liveS`.`submitted_at` AS `submitted_at`,`liveS`.`graded_at` AS `graded_at`,`liveA`.`assignment_group_canvas_id` AS `assignment_group_canvas_id`,`aweight`.`assignment_group_total_weight` AS `assignment_group_total_weight`,`aweight`.`calculated_assignment_weight` AS `calculated_assignment_weight`,`liveS`.`score` / nullif(`aweight`.`assignment_group_sum_possible` * `aweight`.`assignment_group_total_weight` / 100,0) AS `score_weighted_contribution`,`aweight`.`assignment_group_sum_possible` AS `assignment_group_sum_possible`,`liveA`.`points_possible` AS `assignment_points_possible`,`liveS`.`score` AS `score_raw`,`liveS`.`score` / nullif(`liveA`.`points_possible`,0) AS `score_percent`,`liveS`.`grade` AS `grade_raw`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/assignments/',`liveA`.`canvas_id`) AS `assignment_url`,concat('https://collarts.instructure.com/courses/',`c`.`canvas_id`,'/gradebook/speed_grader?assignment_id=',`liveA`.`canvas_id`,'&student_id=',`u`.`canvas_id`) AS `speedgrader_url`,`teachers`.`teacher_list` AS `teacher_list` from (((((((((((((`enrollment_dim` `e` join `user_dim` `u` on(`e`.`user_id` = `u`.`id`)) join `course_dim` `c` on(`e`.`course_id` = `c`.`id`)) join `account_dim` `acc` on(`acc`.`id` = `c`.`account_id`)) join `cll_mv_course_teacher_list` `teachers` on(`teachers`.`course_id` = `c`.`id`)) join `cll_mv_term_names` `vt` on(`c`.`enrollment_term_id` = `vt`.`term_id`)) join `cll_assignments` `liveA` on(`c`.`canvas_id` = `liveA`.`course_canvas_id`)) join `cll_submissions` `liveS` on(`liveA`.`canvas_id` = `liveS`.`assignment_canvas_id` and `liveS`.`user_canvas_id` = `u`.`canvas_id` and (`liveS`.`workflow_state` is null or `liveS`.`workflow_state` <> 'deleted'))) join `assignment_dim` `staleA` on(`staleA`.`canvas_id` = `liveA`.`canvas_id`)) join `cll_mv_assignment_due_dates` `ad` on(`ad`.`user_id` = `u`.`id` and `ad`.`assignment_canvas_id` = `liveA`.`canvas_id`)) join `cll_mv_assignment_weights_per_student` `aweight` on(`aweight`.`submission_canvas_id` = `liveS`.`canvas_id`)) left join `cll_mv_major_degrees` `d` on(`d`.`user_id` = `u`.`id`)) left join `external_tool_activation_dim` `tool` on(`liveA`.`external_tool_canvas_id` = `tool`.`canvas_id`)) left join `pseudonym_dim` `pseudo` on(`pseudo`.`user_id` = `u`.`id` and `pseudo`.`sis_user_id` is not null)) where `liveA`.`workflow_state` = 'published' and `e`.`type` = 'StudentEnrollment' and `e`.`workflow_state` = 'active' and `e`.`created_at` >= '2019-08-01';
 
 -- ----------------------------
 -- Function structure for fn_assignment_path
@@ -3120,6 +3353,22 @@ CREATE FUNCTION `fn_canvas_url`(url_encoded_path varchar(4096))
   SQL SECURITY INVOKER
 BEGIN
 	RETURN CONCAT('https://collarts.instructure.com',url_encoded_path);
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Function structure for fn_course_url
+-- ----------------------------
+DROP FUNCTION IF EXISTS `fn_course_url`;
+delimiter ;;
+CREATE FUNCTION `fn_course_url`(course_canvas_id BIGINT UNSIGNED)
+ RETURNS varchar(256) CHARSET utf8mb4
+  NO SQL 
+  DETERMINISTIC
+  SQL SECURITY INVOKER
+BEGIN
+	RETURN CONCAT('https://collarts.instructure.com/courses/',course_canvas_id);
 END
 ;;
 delimiter ;

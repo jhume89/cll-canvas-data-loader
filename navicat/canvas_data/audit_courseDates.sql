@@ -6,7 +6,7 @@ SET @findDatesRegex :=
 			(Jan[\d\W]|Feb[\d\W]|Mar[\d\W]|Apr[\d\W]|Jun[\d\W]|Jul[\d\W]|Aug[\d\W]|Sept?[\d\W]|Oct[\d\W]|Nov[\d\W]|Dec[\d\W])
 		)(.{0,16})';
 		
-SET @currentTermId := (SELECT id from enrollment_term_dim where `name` = 'T1 2022');
+SET @currentTermId := (SELECT id from enrollment_term_dim where `name` = 'T3 2022');
 -- SET @coursesCreatedFrom := '2021-10-11';
 
 SELECT DISTINCT
@@ -19,7 +19,7 @@ SELECT DISTINCT
 	`t`.`name` AS `term`,
 	`c`.`code` as course_code,
 	`c`.`name` as course_name,
-	liveA.title as assignment_title,
+	concat('"', liveA.title, '"') as assignment_title,
 	CONCAT('https://collarts.instructure.com/courses/',c.canvas_id,'/assignments/',liveA.canvas_id,'/edit') as assignment_url,
   CONCAT('"',CONCAT_WS('\n',
 	  -- Check assignment status

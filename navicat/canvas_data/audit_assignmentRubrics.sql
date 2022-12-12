@@ -20,7 +20,7 @@ acc.`name` as account_name,
 		-- some other IFs
 	),'"') AS problem_text,
 	a.workflow_state as assignment_state,
-	a.submission_types as submision_types,
+	a.submission_types as submission_types,
 	`cohort`.`member_count` as students_in_course,
 	aweight.calculated_assignment_weight as `calculated_assignment_weight`,
   convert_tz(a.due_at, 'UTC', 'Australia/Melbourne') AS original_due_at_aest,
@@ -34,7 +34,7 @@ FROM
   join account_dim acc on (c.account_id = acc.id AND c.workflow_state <> 'deleted')
 	join assignment_dim a on (a.course_id = c.id and a.workflow_state <> 'deleted')
 	join vw_assignment_weights aweight ON (a.id = aweight.assignment_id)
-	left join vw_term_names tv on (tv.id = c.enrollment_term_id)
+	left join vw_term_names tv on (tv.term_id = c.enrollment_term_id)
 	left join vw_assignment_rubrics r on r.assignment_id = a.id
 	left join (
 		select c2.id as course_id, count(e2.id) as `member_count`
@@ -56,6 +56,7 @@ FROM
 			left join vw_assignment_rubrics ar on ar.course_id = c.id
 		  GROUP BY c.canvas_id
 		) rused on rused.course_canvas_id = c.canvas_id
+where tv.sortable_name = '2022 T2' AND c.code like "EM%" and a.submission_types <> 'external_tool'
 GROUP BY term_id,account_name,course_id,a.id,r.rubric_id
 ORDER BY
 term_map desc, account_name,course_code,a.due_at;

@@ -12,13 +12,15 @@ from assignment_dim a
 JOIN course_dim c on c.id = a.course_id
 JOIN enrollment_term_dim t on c.enrollment_term_id = t.id
 left join cll_assignments clla on clla.canvas_id = a.canvas_id
-where a.description like '%echo360.net.au%'; #AND t.name = 'T1 2022';
+where a.description like '%echo360.org.au%'; #AND t.name = 'T1 2022';
 
 select clla.canvas_id as clla_canvas, clla.course_canvas_id, c.code, c.name, t.name, clla.title, clla.description
 from cll_assignments clla
 JOIN course_dim c on c.canvas_id = clla.course_canvas_id
 JOIN enrollment_term_dim t on c.enrollment_term_id = t.id
 where clla.description like "%echo360.org.au%";
+
+
 
 select clla.*, clla.canvas_id, clla.course_canvas_id, clla.title, clla.description
 from cll_assignments clla
