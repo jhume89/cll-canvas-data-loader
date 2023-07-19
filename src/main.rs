@@ -222,7 +222,7 @@ fn main() {
             dump.dump_id.clone(),
             settings.get_save_location(),
           );
-          let res = importer.process(settings.get_all_tables_volatile());
+          let res = importer.process(settings.get_all_tables_volatile(), settings.get_ingest_requests());
           if res.is_ok() {
             let _ = whiskey.put(
               format!("dump_processed_{}", dump.dump_id).as_bytes(),

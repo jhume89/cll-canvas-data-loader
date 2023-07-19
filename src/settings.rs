@@ -54,6 +54,8 @@ pub struct Settings {
   only_load_final: Option<bool>,
   /// Treats all tables as volatile.
   all_tables_volatile: Option<bool>,
+  /// Whether or not to ingest the requests rows. Default True.
+  ingest_requests: Option<bool>,
 }
 
 impl Settings {
@@ -102,6 +104,11 @@ impl Settings {
   /// Gets the notion of whether or not to treat all tables as volatile.
   pub fn get_all_tables_volatile(&self) -> bool {
     self.all_tables_volatile.unwrap_or(false)
+  }
+
+  /// Gets the notion of whether or not to load the (usually very large) requests data.
+  pub fn get_ingest_requests(&self) -> bool {
+    self.ingest_requests.unwrap_or(true)
   }
 
   /// Gets the database url provided by the settings.

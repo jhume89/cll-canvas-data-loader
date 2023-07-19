@@ -198,7 +198,7 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
   }
 
   /// Processes a Dump. Aka Imports it.
-  pub fn process(&self, is_all_volatile: bool) -> Result<()> {
+  pub fn process(&self, is_all_volatile: bool, ingest_requests: bool) -> Result<()> {
     trace!("Process Called for dump: {}", self.dump_id);
 
     // Download the Files for this dump.
@@ -262,6 +262,12 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
           let file_name = path_frd.file_name().unwrap().to_str().unwrap().to_owned();
           let file_name_split = FileNameSplit::new(file_name).unwrap();
           trace!("Post Split!");
+
+          // requests table may be ignored
+          if (file_name_split.table_name == "requests" && !ingest_requests) {
+            info!("Skipping Entry: {:?} , settings indicate ingest_requests is disabled", entry);
+            return;
+          }
 
           // Get the table definition for the downloaded table we're looking at.
           let mut try_count = 0;
