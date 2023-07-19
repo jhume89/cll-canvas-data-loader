@@ -276,7 +276,7 @@ impl<T: ImportDatabaseAdapter> Importer<T> {
             );
           loop {
             try_count += 1;
-            if table_def.is_err() && try_count < 3 {
+            if table_def.is_err() && try_count < 10 {
               info!("process -> table_def -> failed on attempt {:?}...", try_count);
             }
             else {
