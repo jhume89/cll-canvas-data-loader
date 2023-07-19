@@ -1,4 +1,4 @@
--- SET @targetTerm= '2022 T3';
+SET @targetTerm= '2023 T2';
 
 DELIMITER //
 
@@ -7,7 +7,7 @@ DELIMITER //
 		CREATE TABLE cll_mv_submission_states
 				(pkey bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY)
 			AS SELECT *
-			FROM vwmv_submission_states_wtfix;
+			FROM vxm_submission_states_wtfix;
  		CREATE INDEX IF NOT EXISTS user_id ON cll_mv_submission_states(user_id);
 		CREATE INDEX IF NOT EXISTS enrollment_id ON cll_mv_submission_states(enrollment_id);
 		CREATE INDEX IF NOT EXISTS course_id ON cll_mv_submission_states(course_id);
@@ -24,8 +24,8 @@ DELIMITER //
 	ELSE
 	  TRUNCATE TABLE cll_mv_submission_states;
 		INSERT INTO cll_mv_submission_states SELECT NULL, subs.*
-			FROM vwmv_submission_states_wtfix subs;
-			-- WHERE subs.term_map = @targetTerm;
+			FROM vxm_submission_states_wtfix subs
+			WHERE subs.term_map = @targetTerm;
 	END IF //
 
 DELIMITER ;

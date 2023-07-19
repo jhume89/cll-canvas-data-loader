@@ -37,8 +37,8 @@ SELECT
   -- convert_tz(subs.submission_updated_at, 'UTC', 'Australia/Melbourne') AS submission_updated_at_AEST,
   convert_tz(subs.submitted_at, 'UTC', 'Australia/Melbourne') AS submitted_at_AEST,
 	convert_tz(subs.graded_at, 'UTC', 'Australia/Melbourne') AS graded_at_AEST
-FROM (select * from cll_mv_submission_states) subs
+FROM cll_mv_submission_states subs
 JOIN `course_dim` c ON subs.`course_id` = c.id
--- AND subs.student_degree = 'Fashion Marketing'
- HAVING subs.term_map = @targetTerm
-order by course_account,subs.course_code,student_name,assignment_title;
+WHERE course_code like 'MUTAS%' OR course_code like 'MPMPD5%' OR course_code like 'MPMPD6%'
+-- AND subs.term_map = @targetTerm
+order by term_map,course_account,subs.course_code,student_name,assignment_group_name,assignment_title;

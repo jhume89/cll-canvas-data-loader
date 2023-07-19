@@ -10,7 +10,7 @@ DELIMITER //
 		CREATE INDEX IF NOT EXISTS account_id ON cll_mv_major_degrees(account_id);
 		CREATE INDEX IF NOT EXISTS degree_name ON cll_mv_major_degrees(degree_name);
 	ELSE
-	  TRUNCATE TABLE cll_mv_assignment_due_dates;
+	  TRUNCATE TABLE cll_mv_major_degrees;
 		INSERT INTO cll_mv_major_degrees SELECT NULL, vw.*
 			FROM vw_major_degrees vw;
 	END IF //
@@ -50,7 +50,7 @@ DELIMITER //
 	END IF //
 	
 DELIMITER //
-  -- DROP TABLE IF EXISTS cll_mv_term_names;
+  -- DROP TABLE IF EXISTS cll_mv_term_names //
 	IF (NOT EXISTS(SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'canvas_data' AND  TABLE_NAME = 'cll_mv_term_names')) THEN
 		CREATE TABLE cll_mv_term_names
 				(pkey bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY)
@@ -67,7 +67,7 @@ DELIMITER //
 	END IF //
 
 DELIMITER //
-	-- DROP TABLE IF EXISTS cll_mv_assignment_weights_per_student;
+	-- DROP TABLE IF EXISTS cll_mv_assignment_weights_per_student //
 	IF (NOT EXISTS(SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'canvas_data' AND  TABLE_NAME = 'cll_mv_assignment_weights_per_student')) THEN
 		CREATE TABLE cll_mv_assignment_weights_per_student
 				(pkey bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY)

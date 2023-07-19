@@ -1,4 +1,3 @@
-SET @enrollmentsFromDate = '2022-08-01';
 SET @due_from = (SELECT (Date(convert_tz(max(term.date_start), 'UTC', 'Australia/Melbourne'))) from enrollment_term_dim term where term.name = "2023 T2");
 SET @due_to = (SELECT (Date(convert_tz(max(submission_dim.updated_at), 'UTC', 'Australia/Melbourne'))) from submission_dim);
 
@@ -50,10 +49,9 @@ SELECT
 	CONCAT("https://collarts.instructure.com/courses/",c.canvas_id,"/assignments/",a.canvas_id) as assignment_url,
 	CONCAT("https://collarts.instructure.com/courses/",c.canvas_id,"/gradebook") as gradebook_url,
 	subs.teacher_list AS teacher_list
-FROM `vw_submission_states` subs
+FROM `cll_mv_submission_states` subs
 JOIN `course_dim` c ON subs.`course_id` = c.id
 JOIN `assignment_dim` a on subs.assignment_id = a.id
-WHERE subs.`enrollment_created_at` >= @enrollmentsFromDate
 AND (convert_tz(subs.calculated_due_at, 'UTC', 'Australia/Melbourne' ) BETWEEN @due_from AND @due_to)
 AND c.account_id in (select id from ls_monitored_accounts_he)
 order by course_account,course_code,course_name,calculated_due_at,assignment_title,student_name;

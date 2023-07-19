@@ -27,16 +27,18 @@
     "BlankIfZero": false,
     "ContinueOnError": true,
     "CloudInstanceName": "",
-    "UseJsonLegacyFormat": true
+    "UseJsonLegacyFormat": false
   },
   "Objects": [
     {
       "Object": {
-        "Name": "vxm_submission_states_aest_he",
-        "ObjectType": "View_MYSQL"
+        "Name": "vxm_allOverdueMissingSubmissions_v2",
+        "ObjectType": "Query",
+        "Path": "/Users/jordanhume/workspace/cll-canvas-data-loader/navicat/canvas_data/vxm_allOverdueMissingSubmissions_v2.sql",
+        "IsExternalQuery": false
       },
       "TargetName": "",
-      "TargetFilePath": "/Users/jordanhume/Desktop/11/vxm_submission_states_aest_he.csv",
+      "TargetFilePath": "/Users/jordanhume/Desktop/11/vxm_allOverdueMissingSubmissions_v2.csv",
       "AllFields": true,
       "Fields": []
     }
