@@ -17,6 +17,7 @@ mysql_compat = [ "mysql" ]
 base64 = "^0.9"
 chrono = { version = "^0.4", features = [ "serde" ] }
 config = "^0.9"
+exitcode = "1.1.2"
 error-chain = "^0.12"
 env_logger = "^0.5"
 flate2 = { version = "^1.0", features = ["zlib"], default-features = false }

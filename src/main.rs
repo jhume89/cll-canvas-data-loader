@@ -1,6 +1,7 @@
 extern crate base64;
 extern crate chrono;
 extern crate config;
+extern crate exitcode;
 #[macro_use]
 extern crate error_chain;
 extern crate env_logger;
@@ -73,12 +74,13 @@ fn main() {
 
   // Connect to the local KV Store.
   info!("Connecting to RocksDB Store....");
-  let whiskey = DB::open_default(settings.get_rocksdb_location()).expect("Failed to open RocksDB");
+  let whiskey = DB::open_default(settings.get_rocksdb_location())
+    .expect("Failed to open RocksDB");
 
   // Get the latest schema.
-  let latest_schema = api_client.get_latest_schema().expect(
-    "Failed to fetch latest schema!",
-  );
+  let latest_schema = api_client.get_latest_schema()
+    .expect("Failed to fetch latest schema!");
+
   let mut last_processed_schema = latest_schema.version.clone();
   let last_processed_schema_res = whiskey.get("last_version_processed".as_bytes());
   if let Ok(new_last_processed_schema_opt) =  last_processed_schema_res {
@@ -89,7 +91,7 @@ fn main() {
     }
   }
 
-  let _: Vec<_> = dumps
+  let (results, errors): (Vec<_>, Vec<_>) = dumps
     .into_iter()
     .map(|dump| {
       // Check if we're only importing the last dump.
@@ -241,12 +243,20 @@ fn main() {
 
       Err(())
     })
-    .collect();
+    .partition(Result::is_ok);
+  let results: Vec<_> = results.into_iter().map(Result::unwrap).collect();
+  let errors: Vec<_> = errors.into_iter().map(Result::unwrap_err).collect();
 
   let _ = whiskey.put(
     "last_version_processed".as_bytes(),
     latest_schema.version.as_bytes()
   );
 
+  if errors.len() > 0 {
+    error!("Error while processing one or more dump files: {:?}", errors);
+    std::process::exit(exitcode::SOFTWARE);
+  }
+
   info!("Done!");
+  std::process::exit(exitcode::OK)
 }
